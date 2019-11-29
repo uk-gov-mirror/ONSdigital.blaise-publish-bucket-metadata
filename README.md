@@ -1,1 +1,1 @@
-"# blaise_gcp_publish_bucket_metadata" 
+Publish a files metadata onto PubSub queue when a file is uploaded to GCP bucket
