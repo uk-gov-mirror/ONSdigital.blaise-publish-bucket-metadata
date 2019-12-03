@@ -1,48 +1,47 @@
 def pubFileMetaData(data, context):
+    import json
     from google.cloud import pubsub_v1
     project_id = "blaisepoc"
     topic_name = "jcTest"
     client = pubsub_v1.PublisherClient()
     topic_path = client.topic_path(project_id, topic_name)
-    import json
+
     version = context.event_id
     sizeBytes = data['size']
-    md5sum = "md5todo"
+    md5hash = data['md5Hash']
     filename = data['name']
     relativePath = ".\\"
-    sensitivity = ""
-    sourceName = context.event_type
+    sensitivity = "High"
+    sourceName = "gcp_blaise_dde"
     manifestCreated = data['timeCreated']
-    description = "Testing creation of Blaise Manifest Example"
-    iterationL1 = ""
+    description = "GCP Blaise file trigger Manifest"
+    iterationL1 = "\\\\ldata12"
     iterationL2 = ""
     iterationL3 = ""
     iterationL4 = ""
-    dataset = ""
+    dataset = "dde_blaise"
     schemaVersion = ""
-    fullSizeMegabytes = ""
+    fullSizeMegabytes = data['size']/1000000
 
-    data = {}
+    msg = {}
     files = {}
 
-    data["version"] = f"{version}"
+    msg["version"] = f"{version}"
     files["sizeBytes"] = f"{sizeBytes}"
     files["name"] = f"{filename}"
-    files["md5sum"] = f"{md5sum}"
+    files["md5sum"] = f"{md5hash}"
     files["relativePath"] = f"{relativePath}"
-    data["files"] = f"[{files}]"
-    data["sensitivity"] = f"{sensitivity}"
-    data["sourceName"] = f"{sourceName}"
-    data["manifestCreated"] = f"{manifestCreated}"
-    data["description"] = f"{description}"
-    data["iterationL1"] = f"{iterationL1}"
-    data["iterationL2"] = f"{iterationL2}"
-    data["iterationL3"] = f"{iterationL3}"
-    data["iterationL4"] = f"{iterationL4}"
-    data["dataset"] = f"{dataset}"
-    data["schemaVersion"] = f"{schemaVersion}"
-    data["fullSizeMegabytes"] = f"{fullSizeMegabytes}"
-    print(json.dumps(data, sort_keys=True, indent=3))
-    msg = bytes(json.dumps(data), encoding='utf-8')
-    # When you publish a message, the client returns a future.
-    client.publish(topic_path, data=msg)
+    msg["files"] = f"[{files}]"
+    msg["sensitivity"] = f"{sensitivity}"
+    msg["sourceName"] = f"{sourceName}"
+    msg["manifestCreated"] = f"{manifestCreated}"
+    msg["description"] = f"{description}"
+    msg["iterationL1"] = f"{iterationL1}"
+    msg["iterationL2"] = f"{iterationL2}"
+    msg["iterationL3"] = f"{iterationL3}"
+    msg["iterationL4"] = f"{iterationL4}"
+    msg["dataset"] = f"{dataset}"
+    msg["schemaVersion"] = f"{schemaVersion}"
+    msg["fullSizeMegabytes"] = f"{fullSizeMegabytes}"
+    msgbytes = bytes(json.dumps(msg), encoding='utf-8')
+    client.publish(topic_path, data=msgbytes)
