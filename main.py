@@ -1,25 +1,40 @@
 def pubFileMetaData(data, context):
     import json
     from google.cloud import pubsub_v1
+    # project_id = "blaise-dev-258914"
     project_id = "blaisepoc"
-    topic_name = "jcTest"
+    
+    filename = data['name']
+
+    ext = data['name'].split(".")[1].lower()
+    if (ext == "csv") :
+        topic_name = "uploadedFile"
+        sourceName = "gcp_blaise_dde"
+        dataset = "dde_blaise"
+        iterationL1 = "\\\\ldata10"
+        iterationL2 = ""
+        iterationL3 = ""
+        iterationL4 = ""
+    elif ext == "asc" or ext == "rmk" or ext == "sps" :
+        topic_name = "uploadedFile"
+        sourceName = "gcp_blaise_dde"
+        dataset = "dde_blaise"
+        iterationL1 = "\\\\ldata12"
+        iterationL2 = ""
+        iterationL3 = ""
+        iterationL4 = ""    
+
     client = pubsub_v1.PublisherClient()
     topic_path = client.topic_path(project_id, topic_name)
 
     version = context.event_id
     sizeBytes = data['size']
     md5hash = data['md5Hash']
-    filename = data['name']
+
     relativePath = ".\\"
     sensitivity = "High"
-    sourceName = "gcp_blaise_dde"
     manifestCreated = data['timeCreated']
     description = "GCP Blaise file trigger Manifest"
-    iterationL1 = "\\\\ldata12"
-    iterationL2 = ""
-    iterationL3 = ""
-    iterationL4 = ""
-    dataset = "dde_blaise"
     schemaVersion = ""
     fullSizeMegabytes = data['size']/1000000
 
