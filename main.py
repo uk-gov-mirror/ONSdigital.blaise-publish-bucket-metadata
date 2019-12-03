@@ -13,22 +13,22 @@ def pubFileMetaData(data, context):
         topic_name = "blaise-dev-258914-export-topic"
         sourceName = "gcp_blaise_mi"
         dataset = "blaise_mi"
-        iterationL1 = "\\\\ldata10"
-        iterationL2 = ""
-        iterationL3 = ""
+        iterationL1 = "ldata10"
+        iterationL2 = "SurveyData"
+        iterationL3 = "OPN"
         iterationL4 = ""
     elif ext == "asc" or ext == "rmk" or ext == "sps" :
         runPubSub = True
         topic_name = "uploadedFile"
         sourceName = "gcp_blaise_dde"
         dataset = "blaise_dde"
-        iterationL1 = "\\\\ldata12"
+        iterationL1 = "ldata12"
         iterationL2 = ""
         iterationL3 = ""
         iterationL4 = ""
     else:
         runPubSub = False
-        print("Filetype {} not found for DDE or MI", ext)
+        print("Error: Filetype {} not found for DDE or MI".format(ext))
 
 if (runPubSub) :
     client = pubsub_v1.PublisherClient()
