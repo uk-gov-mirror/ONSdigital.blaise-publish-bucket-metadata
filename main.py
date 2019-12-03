@@ -7,23 +7,30 @@ def pubFileMetaData(data, context):
     filename = data['name']
 
     ext = data['name'].split(".")[1].lower()
+    runPubSub = False
     if (ext == "csv") :
-        topic_name = "uploadedFile"
-        sourceName = "gcp_blaise_dde"
-        dataset = "dde_blaise"
+        runPubSub = True
+        topic_name = "blaise-dev-258914-export-topic"
+        sourceName = "gcp_blaise_mi"
+        dataset = "blaise_mi"
         iterationL1 = "\\\\ldata10"
         iterationL2 = ""
         iterationL3 = ""
         iterationL4 = ""
     elif ext == "asc" or ext == "rmk" or ext == "sps" :
+        runPubSub = True
         topic_name = "uploadedFile"
         sourceName = "gcp_blaise_dde"
-        dataset = "dde_blaise"
+        dataset = "blaise_dde"
         iterationL1 = "\\\\ldata12"
         iterationL2 = ""
         iterationL3 = ""
-        iterationL4 = ""    
+        iterationL4 = ""
+    else:
+        runPubSub = False
+        print("Filetype {} not found for DDE or MI", ext)
 
+if (runPubSub) :
     client = pubsub_v1.PublisherClient()
     topic_path = client.topic_path(project_id, topic_name)
 
