@@ -1,8 +1,8 @@
 def pubFileMetaData(data, context):
     import json
     from google.cloud import pubsub_v1
-    # project_id = "blaise-dev-258914"
-    project_id = "blaisepoc"
+    project_id = "blaise-dev-258914"
+    # project_id = "blaisepoc"
     
     filename = data['name']
 
