@@ -1,0 +1,13 @@
+{
+    "version": 1,
+    "files": [],
+    "sensitivity": "High",
+    "sourceName": "gcp_blaise",
+    "description": "Creation of Blaise Manifest for DDE files sent to GCP bucket",
+    "iterationL1": "",
+    "iterationL2": "1911",
+    "iterationL3": "a",
+    "iterationL4": "",
+    "dataset": "mi_blaise",
+    "schemaVersion": 1
+}
