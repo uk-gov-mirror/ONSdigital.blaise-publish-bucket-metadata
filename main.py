@@ -42,3 +42,5 @@ def pubFileMetaData(data, context):
         msg['files'].append(files)
         msg["manifestCreated"] = f"{manifestCreated}"
         msg["fullSizeMegabytes"] = f"{fullSizeMegabytes}"
+        msgbytes = bytes(json.dumps(msg), encoding='utf-8')
+        client.publish(topic_path, data=msgbytes)
