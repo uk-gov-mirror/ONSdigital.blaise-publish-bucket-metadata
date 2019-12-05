@@ -1,0 +1,22 @@
+{
+    "version": 1,
+    "files": [
+        {
+            "sizeBytes": "17",
+            "name": "test.csv",
+            "md5sum": "cjwrfONvB1oEDnw6tfEQnQ==",
+            "relativePath": ".\\"
+        }
+    ],
+    "sensitivity": "High",
+    "sourceName": "gcp_blaise",
+    "description": "Creation of Blaise Manifest for DDE files sent to GCP bucket",
+    "iterationL1": "",
+    "iterationL2": "1911",
+    "iterationL3": "a",
+    "iterationL4": "",
+    "dataset": "mi_blaise",
+    "schemaVersion": 1,
+    "manifestCreated": "2019-12-05T12:34:15.175Z",
+    "fullSizeMegabytes": "1.7e-05"
+}
