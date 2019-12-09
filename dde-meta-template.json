@@ -6,5 +6,7 @@
     "sourceName": "gcp_blaise",
     "description": "Creation of Blaise Manifest for DDE files sent to GCP bucket",
     "dataset": "blaise_dde",
-    "iterationL1": "ldata12"
+    "iterationL1": "ldata12",
+    "manifestCreated": "",
+    "fullSizeMegabytes": ""
 }
