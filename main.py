@@ -34,7 +34,7 @@ def pubFileMetaData(data, context):
         runPubSub = False
         if (fileExtn == "csv"):
             runPubSub = True
-            metaTemplate = os.getcwd + "/mi-meta-template.json"
+            metaTemplate = os.path.join(os.getcwd(), "mi-meta-template.json")
             dest["metaTemplate"] = metaTemplate
             dest["iterationL2"] = ''
             dest["iterationL3"] = ''
@@ -42,7 +42,7 @@ def pubFileMetaData(data, context):
 
         elif fileExtn == "asc" or fileExtn == "rmk" or fileExtn == "sps":
             runPubSub = True
-            metaTemplate = os.getcwd + "/dde-meta-template.json"
+            metaTemplate = os.path.join(os.getcwd(), "dde-meta-template.json")
             # File needs to be in the format of opn1911a.sps
             dest["metaTemplate"] = metaTemplate
             dest["iterationL2"] = data['name'][:3]
