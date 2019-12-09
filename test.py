@@ -1,15 +1,19 @@
-import json, os
+import json
+import os
+
 from main import createMsg
-with open(os.getcwd() + "\data-sent-by-gcp-to-storage-func.json") as json_file:
+datafile = "\\data-sent-by-gcp-to-storage-func.json"
+
+with open(os.getcwd() + datafile) as json_file:
     data = json.load(json_file)
 
 dest = {}
 
-metaTemplate = os.getcwd() + "\dde-meta-template.json"
-dest["metaTemplate"] = f"{metaTemplate}"
-dest["iterationL2"] = f"{data['name'][:3]}"
-dest["iterationL3"] = f"{data['name'][3:7]}"
-dest["iterationL4"] = f"{data['name'][7:8]}"    
+metaTemplate = os.getcwd() + "\\dde-meta-template.json"
+dest["metaTemplate"] = {metaTemplate}
+dest["iterationL2"] = {data['name'][:3]}
+dest["iterationL3"] = {data['name'][3:7]}
+dest["iterationL4"] = {data['name'][7:8]}
 
-x = createMsg(data,dest)       
+x = createMsg(data, dest)
 print(json.dumps(x, indent=3))
