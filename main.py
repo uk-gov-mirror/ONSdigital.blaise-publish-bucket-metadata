@@ -26,7 +26,7 @@ def pubFileMetaData(data, context):
     project_id = os.environ['PROJECT_ID']
     if(project_id): 
         dest = {}
-        topic_name = "blaise-dev-258914-export-topic"
+        topic_name = "blaise-dev-258914-export-topic" 
         fileExtn = data['name'].split(".")[1].lower()
         runPubSub = False
         if (fileExtn == "csv"):
