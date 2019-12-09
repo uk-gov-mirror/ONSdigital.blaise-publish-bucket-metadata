@@ -1,9 +1,7 @@
-import json
-import os
-
-
 def createMsg(data, dest):
+    import json
 
+    print(dest["metaTemplate"])
     with open(dest["metaTemplate"]) as json_file:
         msg = json.load(json_file)
 
@@ -13,18 +11,19 @@ def createMsg(data, dest):
     md5hash = data['md5Hash']
     manifestCreated = data['timeCreated']
     fullSizeMegabytes = "{:.6f}".format(int(data['size'])/1000000)
-    files["sizeBytes"] = {sizeBytes}
-    files["name"] = {filename}
-    files["md5hash"] = {md5hash}
+    files["sizeBytes"] = sizeBytes
+    files["name"] = filename
+    files["md5hash"] = md5hash
     files["relativePath"] = ".\\"
-    msg['files'] = {files}
-    msg["manifestCreated"] = {manifestCreated}
-    msg["fullSizeMegabytes"] = {fullSizeMegabytes}
+    msg['files'] = files
+    msg["manifestCreated"] = manifestCreated
+    msg["fullSizeMegabytes"] = fullSizeMegabytes
     return msg
 
 
 def pubFileMetaData(data, context):
-
+    import os
+    import json
     from google.cloud import pubsub_v1
     project_id = os.environ['PROJECT_ID']
 
@@ -35,20 +34,20 @@ def pubFileMetaData(data, context):
         runPubSub = False
         if (fileExtn == "csv"):
             runPubSub = True
-            metaTemplate = os.getcwd + "\\mi-meta-template.json"
-            dest["metaTemplate"] = {metaTemplate}
-            dest["iterationL2"] = {''}
-            dest["iterationL3"] = {''}
-            dest["iterationL4"] = {''}
+            metaTemplate = os.getcwd + "/mi-meta-template.json"
+            dest["metaTemplate"] = metaTemplate
+            dest["iterationL2"] = ''
+            dest["iterationL3"] = ''
+            dest["iterationL4"] = ''
 
         elif fileExtn == "asc" or fileExtn == "rmk" or fileExtn == "sps":
             runPubSub = True
-            metaTemplate = os.getcwd + "\\dde-meta-template.json"
+            metaTemplate = os.getcwd + "/dde-meta-template.json"
             # File needs to be in the format of opn1911a.sps
-            dest["metaTemplate"] = {metaTemplate}
-            dest["iterationL2"] = {data['name'][:3]}
-            dest["iterationL3"] = {data['name'][3:7]}
-            dest["iterationL4"] = {data['name'][7:8]}
+            dest["metaTemplate"] = metaTemplate
+            dest["iterationL2"] = data['name'][:3]
+            dest["iterationL3"] = data['name'][3:7]
+            dest["iterationL4"] = data['name'][7:8]
         else:
             runPubSub = False
             print("Filetype {} not found for DDE or MI".format(fileExtn))
