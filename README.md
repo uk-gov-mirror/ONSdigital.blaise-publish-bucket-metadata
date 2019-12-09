@@ -26,9 +26,14 @@ For Data Delievery Exchange (DDE), the following message is published to the Pub
 
 To deploy the function run the following from the GCP console
 
-**gcloud functions deploy pubFileMetaData --source https://source.developers.google.com/projects/blaise-dev-258914/repos/github_onsdigital_blaise-gcp-publish-bucket-metadata --runtime python37 --trigger-resource blaise-dev-258914-results --trigger-event google.storage.object.finalize --set-env-vars PROJECT_ID=blaise-dev-258914**
+**gcloud functions deploy pubFileMetaData 
+--source https://source.developers.google.com/projects/blaise-dev-258914/repos/github_onsdigital_blaise-gcp-publish-bucket-metadata 
+--runtime python37 
+--trigger-resource blaise-dev-258914-results 
+--trigger-event google.storage.object.finalize 
+--set-env-vars PROJECT_ID=blaise-dev-258914, TOPIC_NAME=blaise-dev-258914-export-topic**
 
-After running the above to deploy, the following results :
+After deploying, the following results are returned :
 
     Deploying function (may take a while - up to 2 minutes)...done.
     availableMemoryMb: 256
@@ -52,5 +57,3 @@ After running the above to deploy, the following results :
     timeout: 60s
     updateTime: '2019-12-09T12:07:10Z'
     versionId: '10'
-
-The above is set to Publish a files metadata when a file is uploaded or changed on bucket blaise-dev-258914-results.
