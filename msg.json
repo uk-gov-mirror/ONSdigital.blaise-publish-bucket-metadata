@@ -1,0 +1,18 @@
+{
+    "kind": "storage#object",
+    "id": "blaise-dev-258914-results/opn1912a.asc/1575904212845617",
+    "selfLink": "https://www.googleapis.com/storage/v1/b/blaise-dev-258914-results/o/opn1912a.asc",
+    "name": "opn1912a.asc",
+    "bucket": "blaise-dev-258914-results",
+    "generation": "1575904212845617",
+    "metageneration": "1",
+    "timeCreated": "2019-12-09T15:10:12.845Z",
+    "updated": "2019-12-09T15:10:12.845Z",
+    "storageClass": "REGIONAL",
+    "timeStorageClassUpdated": "2019-12-09T15:10:12.845Z",
+    "size": "22",
+    "md5Hash": "+rk09ZAZge+rQW4uzw6DVA==",
+    "mediaLink": "https://www.googleapis.com/download/storage/v1/b/blaise-dev-258914-results/o/opn1912a.asc?generation=1575904212845617&alt=media",
+    "crc32c": "jLBbcg==",
+    "etag": "CLGIutbsqOYCEAE="
+}

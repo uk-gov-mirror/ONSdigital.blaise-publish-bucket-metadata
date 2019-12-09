@@ -53,5 +53,6 @@ def pubFileMetaData(data, context):
             client = pubsub_v1.PublisherClient()
             topic_path = client.topic_path(project_id, topic_name)
             msg = createMsg(data, dest)
+            print(msg)
             msgbytes = bytes(json.dumps(msg), encoding='utf-8')
             client.publish(topic_path, data=msgbytes)
