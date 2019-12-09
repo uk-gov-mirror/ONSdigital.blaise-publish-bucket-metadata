@@ -32,28 +32,28 @@ To deploy the function run the following from the GCP console
 --trigger-resource blaise-dev-258914-results 
 --trigger-event google.storage.object.finalize 
 --set-env-vars PROJECT_ID=blaise-dev-258914, TOPIC_NAME=blaise-dev-258914-export-topic**
+--region=europe-west2
 
-After deploying, the following results are returned :
-
-    Deploying function (may take a while - up to 2 minutes)...done.
-    availableMemoryMb: 256
-    entryPoint: pubFileMetaData
-    environmentVariables:
-    PROJECT_ID: blaise-dev-258914
-    eventTrigger:
-    eventType: google.storage.object.finalize
-    failurePolicy: {}
-    resource: projects/_/buckets/blaise-dev-258914-results
-    service: storage.googleapis.com
-    labels:
-    deployment-tool: cli-gcloud
-    name: projects/blaise-dev-258914/locations/us-central1/functions/pubFileMetaData
-    runtime: python37
-    serviceAccountEmail: blaise-dev-258914@appspot.gserviceaccount.com
-    sourceRepository:
-    deployedUrl: https://source.developers.google.com/projects/blaise-dev-258914/repos/github_onsdigital_blaise-gcp-publish-bucket-metadata/revisions/8db2ba6c7c859f88ee3462c4717ecfe64461efc7/paths/
-    url: https://source.developers.google.com/projects/blaise-dev-258914/repos/github_onsdigital_blaise-gcp-publish-bucket-metadata/moveable-aliases/master/paths/
-    status: ACTIVE
-    timeout: 60s
-    updateTime: '2019-12-09T12:07:10Z'
-    versionId: '10'
+Deploying function (may take a while - up to 2 minutes)...done.
+availableMemoryMb: 256
+entryPoint: pubFileMetaData
+environmentVariables:
+  PROJECT_ID: blaise-dev-258914
+  TOPIC_NAME: blaise-dev-258914-export-topic
+eventTrigger:
+  eventType: google.storage.object.finalize
+  failurePolicy: {}
+  resource: projects/_/buckets/blaise-dev-258914-results
+  service: storage.googleapis.com
+labels:
+  deployment-tool: cli-gcloud
+name: projects/blaise-dev-258914/locations/europe-west2/functions/pubFileMetaData
+runtime: python37
+serviceAccountEmail: blaise-dev-258914@appspot.gserviceaccount.com
+sourceRepository:
+  deployedUrl: https://source.developers.google.com/projects/blaise-dev-258914/repos/github_onsdigital_blaise-gcp-publish-bucket-metadata/revisions/a508a7800f7cf7d1e83f312b0f9e13ff12c7c5a0/paths/
+  url: https://source.developers.google.com/projects/blaise-dev-258914/repos/github_onsdigital_blaise-gcp-publish-bucket-metadata/moveable-aliases/master/paths/
+status: ACTIVE
+timeout: 60s
+updateTime: '2019-12-09T14:47:24Z'
+versionId: '1'
