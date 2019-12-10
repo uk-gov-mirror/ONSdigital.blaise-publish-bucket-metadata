@@ -9,6 +9,7 @@ steps:
       --region=europe-west2 \
       --source=https://source.developers.google.com/projects/blaise-dev-258914/repos/github_onsdigital_blaise-gcp-publish-bucket-metadata \
       --runtime=python37 \
+      --trigger-http=GET \
       --trigger-bucket=blaise-dev-258914-results \
       --trigger-resource=blaise-dev-258914-results \
       --trigger-topic=blaise-dev-258914-export-topic \
