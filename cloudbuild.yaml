@@ -12,5 +12,5 @@ steps:
       --trigger-bucket=blaise-dev-258914-results \
       --trigger-event=google.storage.object.finalize \
       --blaise-dev-258914-export-topic \
-      --set-env-vars=[PROJECT_ID=blaise-dev-258914,TOPIC_NAME=blaise-dev-258914-export-topic]
+      --set-env-vars=[PROJECT_ID=blaise-dev-258914,TOPIC_NAME=blaise-dev-258914-export-topic] \
       --region=europe-west2
