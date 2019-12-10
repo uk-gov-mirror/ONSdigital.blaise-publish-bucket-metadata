@@ -3,6 +3,7 @@ steps:
     id: function-deploy-meta-publish
     args:
       [
+        'beta',
         'functions',
         'deploy',
         'pubFileMetaData',
