@@ -33,7 +33,7 @@ This is based on dde/mi-meta-template.json where 'Files', 'iterationL2-4', 'mani
 
 ## To deploy the function run the following from the GCP console
 
-**`
+```
 gcloud functions deploy pubFileMetaData
   *--source https://source.developers.google.com/projects/blaise-dev-258914/repos/github_onsdigital_blaise-gcp-publish-bucket-metadata 
   *--runtime python37 
@@ -41,7 +41,7 @@ gcloud functions deploy pubFileMetaData
   *--trigger-event google.storage.object.finalize 
   *--set-env-vars PROJECT_ID=blaise-dev-258914, TOPIC_NAME=blaise-dev-258914-export-topic**
   *--region=europe-west2
-`**
+```
 
 ```
 Deploying function (may take a while - up to 2 minutes)...done.
