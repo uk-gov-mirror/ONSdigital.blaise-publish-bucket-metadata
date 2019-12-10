@@ -8,7 +8,7 @@ The following filetypes are created or updated on a specified bucket, the messag
 
 This is based on dde/mi-meta-template.json where 'Files', 'iterationL2-4', 'manifestCreated' and 'fullSizeMegabytes' meta data substituted.
 
-```json{
+```{
     "version": 1,
     "files": [{  // the following 4 items Updated by GCP storage trigger function pubFileMetaData
             "sizeBytes": "17",
