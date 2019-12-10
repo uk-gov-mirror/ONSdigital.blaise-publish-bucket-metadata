@@ -26,10 +26,11 @@ def pubFileMetaData(data, context):
     import json
     from google.cloud import pubsub_v1
     project_id = os.environ['PROJECT_ID']
-    # project_id = "blaise-dev-258914"
+    project_id = "blaise-dev-258914"
     if(project_id):
         dest = {}
         topic_name = os.environ['TOPIC_NAME']
+        topic_name = "blaise-dev-258914-export-topic"
         fileExtn = data['name'].split(".")[1].lower()
         runPubSub = False
         if (fileExtn == "csv"):
