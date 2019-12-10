@@ -1,5 +1,5 @@
 steps:
-  - name: gcr.io/cloud-builders/gcloud
+  - name: gcr.io/blaise-dev-258914/gcloud
     id: function-deploy-meta-publish
     args:
       [
