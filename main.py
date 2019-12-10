@@ -15,7 +15,7 @@ def createMsg(data, dest):
     files["name"] = filename
     files["md5hash"] = md5hash
     files["relativePath"] = ".\\"
-    msg['files'] = files
+    msg['files'].append(files)
     msg["manifestCreated"] = manifestCreated
     msg["fullSizeMegabytes"] = fullSizeMegabytes
     return msg
