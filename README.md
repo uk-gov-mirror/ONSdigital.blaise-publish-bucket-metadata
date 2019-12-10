@@ -8,7 +8,7 @@ The following filetypes are created or updated on a specified bucket, the messag
 
 This is based on dde/mi-meta-template.json where 'Files', 'iterationL2-4', 'manifestCreated' and 'fullSizeMegabytes' meta data substituted.
 
-```
+```json
 {
     "version": 1,
     "files": [{  // the following 4 items Updated by GCP storage trigger function pubFileMetaData
@@ -33,14 +33,17 @@ This is based on dde/mi-meta-template.json where 'Files', 'iterationL2-4', 'mani
 
 ## To deploy the function run the following from the GCP console
 
-`**gcloud functions deploy pubFileMetaData
+```json
+**gcloud functions deploy pubFileMetaData
   --source https://source.developers.google.com/projects/blaise-dev-258914/repos/github_onsdigital_blaise-gcp-publish-bucket-metadata 
   --runtime python37 
   --trigger-resource blaise-dev-258914-results 
   --trigger-event google.storage.object.finalize 
   --set-env-vars PROJECT_ID=blaise-dev-258914, TOPIC_NAME=blaise-dev-258914-export-topic**
-  --region=europe-west2**`
+  --region=europe-west2**
+```
 
+`
 Deploying function (may take a while - up to 2 minutes)...done.
 availableMemoryMb: 256
 entryPoint: pubFileMetaData
@@ -64,3 +67,4 @@ status: ACTIVE
 timeout: 60s
 updateTime: '2019-12-09T14:47:24Z'
 versionId: '1'
+'
