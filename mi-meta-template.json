@@ -1,0 +1,12 @@
+{
+    "version": 1,
+    "schemaVersion": 1,
+    "files": [],
+    "sensitivity": "High",
+    "sourceName": "gcp_blaise",
+    "description": "Creation of Blaise Manifest for Mi files sent to GCP bucket",
+    "dataset": "blaise_mi",
+    "iterationL1": "ldata10",
+    "manifestCreated": "",
+    "fullSizeMegabytes": ""
+}

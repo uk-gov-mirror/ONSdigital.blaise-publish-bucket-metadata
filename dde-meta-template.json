@@ -1,0 +1,12 @@
+{
+    "version": 1,
+    "schemaVersion": 1,
+    "files": [],
+    "sensitivity": "High",
+    "sourceName": "gcp_blaise",
+    "description": "Creation of Blaise Manifest for DDE files sent to GCP bucket",
+    "dataset": "blaise_dde",
+    "iterationL1": "ldata12",
+    "manifestCreated": "",
+    "fullSizeMegabytes": ""
+}

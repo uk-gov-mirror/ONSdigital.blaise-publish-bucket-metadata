@@ -1,0 +1,15 @@
+steps:
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: Configure user
+    entrypoint: /bin/sh
+    args:
+    - '-c'
+    - |
+      gcloud functions deploy pubFileMetaData \
+      --region=europe-west2 \
+      --source=https://source.developers.google.com/projects/blaise-dev-258914/repos/github_onsdigital_blaise-gcp-publish-bucket-metadata \
+      --runtime=python37 \
+      --trigger-bucket=blaise-dev-258914-results \
+      --trigger-resource=blaise-dev-258914-results \
+      --trigger-topic=blaise-dev-258914-export-topic \
+      --trigger-event=google.storage.object.finalize
