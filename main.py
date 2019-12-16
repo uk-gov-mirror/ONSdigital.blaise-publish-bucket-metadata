@@ -1,3 +1,19 @@
+def encrypt_file(filename):
+    import os
+    import gnupg
+    gpghome = os.path.join(os.getcwd(),'gpghome')
+    os.system('rm -rf ' + gpghome)
+    os.system('mkdir '+ gpghome)
+    gpg = gnupg.GPG(gnupghome=gpghome)
+    pubkey = open('key.gpg').read()
+    import_result = gpg.import_keys(pubkey)
+    # print(import_result.results)
+    uid = "blaise5-gcp-gpg-key (key to be used for blaise5 content) <nic.hayes@ons.statistics.gov.uk>"
+    open(filename, 'w').write('You need to Google Venn diagram.')
+    with open(filename, 'rb') as f:
+        status = gpg.encrypt_file( f, recipients=[uid],sign=None,armor=True, output=filename,always_trust=True)
+
+
 def createMsg(data, dest):
     import json
 
@@ -28,6 +44,7 @@ def pubFileMetaData(data, context):
     project_id = os.environ['PROJECT_ID']
     project_id = "blaise-dev-258914"
     if(project_id):
+        encrypt_file(data['name'])
         dest = {}
         topic_name = os.environ['TOPIC_NAME']
         topic_name = "blaise-dev-258914-export-topic"
