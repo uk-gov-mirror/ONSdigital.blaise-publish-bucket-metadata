@@ -3,6 +3,7 @@ def encrypt_file(filename):
     import gnupg
 
     gpghome = os.path.join(os.getcwd(), 'gpghome')
+    print(gpghome)
     if(os.path.exists(gpghome)):
         os.system('rm -rf ' + gpghome)
         os.system('mkdir ' + gpghome)
