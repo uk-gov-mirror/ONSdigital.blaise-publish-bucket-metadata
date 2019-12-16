@@ -1,3 +1,24 @@
+def encrypt_file(filename):
+    import os
+    import gnupg
+    from pprint import pprint
+
+    gpghome = os.path.join(os.getcwd(),'gpghome')
+    os.system('rm -rf ' + gpghome)
+    os.system('mkdir '+ gpghome)
+    gpg = gnupg.GPG(gnupghome=gpghome)
+    pubkey = open('key.gpg').read()
+    import_result = gpg.import_keys(pubkey)
+    pprint(import_result.results)
+    print(import_result.results)
+    uid = "blaise5-gcp-gpg-key (key to be used for blaise5 content) <nic.hayes@ons.statistics.gov.uk>"
+    with open(filename, 'rb') as f:
+        status = gpg.encrypt_file(f, recipients=[uid], sign=None, armor=True, output=filename, always_trust=True)
+    print ('jc ok: ', status.ok)
+    print ('jc status: ', status.status)
+    print ('jc stderr: ', status.stderr)
+
+
 def createMsg(data, dest):
     import json
 
@@ -28,6 +49,7 @@ def pubFileMetaData(data, context):
     project_id = os.environ['PROJECT_ID']
     project_id = "blaise-dev-258914"
     if(project_id):
+        encrypt_file(data['name'])
         dest = {}
         topic_name = os.environ['TOPIC_NAME']
         topic_name = "blaise-dev-258914-export-topic"
