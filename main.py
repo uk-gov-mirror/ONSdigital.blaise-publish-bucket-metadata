@@ -1,5 +1,12 @@
 def encrypt_file(filename):
     import os
+    uid = "blaise5-gcp-gpg-key (key to be used for blaise5 content) <nic.hayes@ons.statistics.gov.uk>"
+    os.system('gpg --import key.gpg')
+    os.system('gpg -e ' + filename + ' -r ' + uid)
+
+
+def encrypt_file1(filename):
+    import os
     import gnupg
 
     gpghome = os.path.join(os.getcwd(), 'gpghome')
