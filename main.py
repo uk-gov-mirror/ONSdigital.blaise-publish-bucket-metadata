@@ -29,6 +29,8 @@ def createMsg(data):
     runPubSub = False
     if (fileExtn == "csv"):
         runPubSub = True
+
+        msg["description"] = 'Mi Data Extract uploaded to GCP bucket from Blaise5'
         msg["dataset"] = 'blaise_mi'
         msg["iterationL2"] = ''
         msg["iterationL3"] = ''
@@ -39,6 +41,7 @@ def createMsg(data):
         runPubSub = True
         metaTemplate = os.path.join(os.getcwd(), "dde-meta-template.json")
         # File needs to be in the format of opn1911a.sps
+        msg["description"] = 'Data Delivery Exchange files uploaded to GCP bucket from Blaise5'
         msg["dataset"] = 'blaise_dde'
         msg["iterationL1"] = data['name'][:3]
         msg["iterationL2"] = data['name'][3:7]
