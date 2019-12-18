@@ -1,95 +1,71 @@
-def encrypt_file(filename):
+def createMsg(data):
     import os
-    uid = "blaise5-gcp-gpg-key (key to be used for blaise5 content) <nic.hayes@ons.statistics.gov.uk>"
-    os.system('gpg --import key.gpg')
-    os.system('gpg -e ' + filename + ' -r ' + uid)
-
-
-def encrypt_file1(filename):
-    import os
-    import gnupg
-
-    gpghome = os.path.join(os.getcwd(), 'gpghome')
-    print(gpghome)
-    if(os.path.exists(gpghome)):
-        os.system('rm -rf ' + gpghome)
-        os.system('mkdir ' + gpghome)
-
-    # os.system('mkdir '+ gpghome)
-    print(gpghome)
-    gpg = gnupg.GPG(gnupghome=gpghome)
-    pubkey = open('key.gpg').read()
-    import_result = gpg.import_keys(pubkey)
-
-    print(import_result.results)
-    uid = "blaise5-gcp-gpg-key (key to be used for blaise5 content) <nic.hayes@ons.statistics.gov.uk>"
-    with open(filename, 'rb') as f:
-        status = gpg.encrypt_file(f, recipients=[uid], sign=None,armor=True, output=filename, always_trust=True)
-    print ('jc ok: ', status.ok)
-    print ('jc status: ', status.status)
-    print ('jc stderr: ', status.stderr)
-    
-
-def createMsg(data, dest):
-    import json
-
-    print(dest["metaTemplate"])
-    with open(dest["metaTemplate"]) as json_file:
-        msg = json.load(json_file)
+    msg = {
+        "version": 1,
+        "schemaVersion": 1,
+        "files": [],
+        "sensitivity": "High",
+        "sourceName": "gcp_blaise",
+        "description": "",
+        "dataset": "",
+        "iterationL1": "",
+        "iterationL2": "",
+        "iterationL3": "",
+        "iterationL4": "",
+        "manifestCreated": "",
+        "fullSizeMegabytes": ""
+    }
 
     files = {}
     filename = data['name'] + ":" + data['bucket']
-    sizeBytes = data['size']
-    md5hash = data['md5Hash']
-    manifestCreated = data['timeCreated']
-    fullSizeMegabytes = "{:.6f}".format(int(data['size'])/1000000)
-    files["sizeBytes"] = sizeBytes
+
+    files["sizeBytes"] = data['size']
     files["name"] = filename
-    files["md5hash"] = md5hash
+    files["md5sum"] = data['md5Hash'] # Note GCP uses md5hash - however, Minifi needs it to be md5sum
     files["relativePath"] = ".\\"
     msg['files'].append(files)
-    msg["manifestCreated"] = manifestCreated
-    msg["fullSizeMegabytes"] = fullSizeMegabytes
-    return msg
 
+    fileExtn = data['name'].split(".")[1].lower()
+    runPubSub = False
+    if (fileExtn == "csv"):
+        runPubSub = True
+        msg["iterationL1"] = ''
+        msg["iterationL2"] = ''
+        msg["iterationL3"] = ''
+        msg["iterationL4"] = ''
+
+    elif fileExtn == "asc" or fileExtn == "rmk" or fileExtn == "sps":
+        runPubSub = True
+        metaTemplate = os.path.join(os.getcwd(), "dde-meta-template.json")
+        # File needs to be in the format of opn1911a.sps
+        msg["iterationL1"] = data['name'][:3]
+        msg["iterationL2"] = data['name'][3:7]
+        msg["iterationL3"] = data['name'][7:8]
+        msg["iterationL4"] = ''
+    else:
+        runPubSub = False
+        print("Filetype {} not found for DDE or MI".format(fileExtn))
+
+    if (runPubSub):
+        msg["manifestCreated"] = data['timeCreated']
+        msg["fullSizeMegabytes"] = "{:.6f}".format(int(data['size'])/1000000)
+        return msg
 
 def pubFileMetaData(data, context):
     import os
     import json
     from google.cloud import pubsub_v1
+
+    msg = createMsg(data)
+
     project_id = os.environ['PROJECT_ID']
-    project_id = "blaise-dev-258914"
+    topic_name = os.environ['TOPIC_NAME']
+    # project_id = "blaise-dev-258914"
+    # topic_name = "blaise-dev-258914-export-topic"
     if(project_id):
-        encrypt_file(data['name'])
-        dest = {}
-        topic_name = os.environ['TOPIC_NAME']
-        topic_name = "blaise-dev-258914-export-topic"
-        fileExtn = data['name'].split(".")[1].lower()
-        runPubSub = False
-        if (fileExtn == "csv"):
-            runPubSub = True
-            metaTemplate = os.path.join(os.getcwd(), "mi-meta-template.json")
-            dest["metaTemplate"] = metaTemplate
-            dest["iterationL2"] = ''
-            dest["iterationL3"] = ''
-            dest["iterationL4"] = ''
+        client = pubsub_v1.PublisherClient()
+        topic_path = client.topic_path(project_id, topic_name)
+        msgbytes = bytes(json.dumps(msg), encoding='utf-8')
+        client.publish(topic_path, data=msgbytes)
 
-        elif fileExtn == "asc" or fileExtn == "rmk" or fileExtn == "sps":
-            runPubSub = True
-            metaTemplate = os.path.join(os.getcwd(), "dde-meta-template.json")
-            # File needs to be in the format of opn1911a.sps
-            dest["metaTemplate"] = metaTemplate
-            dest["iterationL2"] = data['name'][:3]
-            dest["iterationL3"] = data['name'][3:7]
-            dest["iterationL4"] = data['name'][7:8]
-        else:
-            runPubSub = False
-            print("Filetype {} not found for DDE or MI".format(fileExtn))
-
-        if (runPubSub):
-            client = pubsub_v1.PublisherClient()
-            topic_path = client.topic_path(project_id, topic_name)
-            msg = createMsg(data, dest)
-            print(msg)
-            msgbytes = bytes(json.dumps(msg), encoding='utf-8')
-            client.publish(topic_path, data=msgbytes)
+# gcloud functions deploy pubFileMetaData --source https://source.developers.google.com/projects/blaise-dev-258914/repos/github_onsdigital_blaise-gcp-publish-bucket-metadata --runtime python37 --trigger-resource blaise-dev-258914-results --trigger-event google.storage.object.finalize --set-env-vars PROJECT_ID=blaise-dev-258914,TOPIC_NAME=blaise-dev-258914-export-topic --region=europe-west2
