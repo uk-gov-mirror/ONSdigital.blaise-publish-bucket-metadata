@@ -70,7 +70,10 @@ def pubFileMetaData(data, context):
     if(project_id):
         client = pubsub_v1.PublisherClient()
         topic_path = client.topic_path(project_id, topic_name)
-        msgbytes = bytes(json.dumps(msg), encoding='utf-8')
+        import base64
+        msgbytes = base64.b64decode(msg).encode('hex')
+        # msgbytes = bytes(json.dumps(msg), encoding='utf-8')
         client.publish(topic_path, data=msgbytes)
+
 
 # gcloud functions deploy pubFileMetaData --source https://source.developers.google.com/projects/blaise-dev-258914/repos/github_onsdigital_blaise-gcp-publish-bucket-metadata --runtime python37 --trigger-resource blaise-dev-258914-results --trigger-event google.storage.object.finalize --set-env-vars PROJECT_ID=blaise-dev-258914,TOPIC_NAME=blaise-dev-258914-export-topic --region=europe-west2
