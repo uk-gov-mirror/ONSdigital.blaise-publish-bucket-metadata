@@ -29,15 +29,17 @@ def createMsg(data):
     runPubSub = False
     if (fileExtn == "csv"):
         runPubSub = True
-        msg["iterationL1"] = ''
+        msg["dataset"] = 'blaise_mi'
         msg["iterationL2"] = ''
         msg["iterationL3"] = ''
+        msg["iterationL4"] = ''
         msg["iterationL4"] = ''
 
     elif fileExtn == "asc" or fileExtn == "rmk" or fileExtn == "sps":
         runPubSub = True
         metaTemplate = os.path.join(os.getcwd(), "dde-meta-template.json")
         # File needs to be in the format of opn1911a.sps
+        msg["dataset"] = 'blaise_dde'
         msg["iterationL1"] = data['name'][:3]
         msg["iterationL2"] = data['name'][3:7]
         msg["iterationL3"] = data['name'][7:8]
