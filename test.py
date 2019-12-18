@@ -3,7 +3,7 @@ import os
 
 from main import *
 
-datafile = "data-sent-by-gcp-to-storage-func.json"
+datafile = "test-data-from-gcp.json"
 
 with open(os.path.join(os.getcwd(), datafile)) as json_file:
     data = json.load(json_file)

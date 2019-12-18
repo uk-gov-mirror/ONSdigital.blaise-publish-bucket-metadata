@@ -32,9 +32,9 @@ def createMsg(data):
 
         msg["description"] = 'Mi Data Extract uploaded to GCP bucket from Blaise5'
         msg["dataset"] = 'blaise_mi'
+        msg["iterationL1"] = 'OPN'
         msg["iterationL2"] = ''
         msg["iterationL3"] = ''
-        msg["iterationL4"] = ''
         msg["iterationL4"] = ''
 
     elif fileExtn == "asc" or fileExtn == "rmk" or fileExtn == "sps":
@@ -43,9 +43,9 @@ def createMsg(data):
         # File needs to be in the format of opn1911a.sps
         msg["description"] = 'Data Delivery Exchange files uploaded to GCP bucket from Blaise5'
         msg["dataset"] = 'blaise_dde'
-        msg["iterationL1"] = data['name'][:3]
-        msg["iterationL2"] = data['name'][3:7]
-        msg["iterationL3"] = data['name'][7:8]
+        msg["iterationL1"] = data['name'][:3].upper()
+        msg["iterationL2"] = data['name'][3:7].upper()
+        msg["iterationL3"] = data['name'][7:8].upper()
         msg["iterationL4"] = ''
     else:
         runPubSub = False
