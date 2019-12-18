@@ -21,7 +21,8 @@ def createMsg(data):
 
     files["sizeBytes"] = data['size']
     files["name"] = filename
-    files["md5sum"] = data['md5Hash'] # Note GCP uses md5hash - however, Minifi needs it to be md5sum
+    import base64
+    files["md5sum"] = base64.b64decode(data['md5Hash']).encode('hex') # Note GCP uses md5hash - however, Minifi needs it to be md5sum
     files["relativePath"] = ".\\"
     msg['files'].append(files)
 
@@ -69,11 +70,8 @@ def pubFileMetaData(data, context):
     # topic_name = "blaise-dev-258914-export-topic"
     if(project_id):
         client = pubsub_v1.PublisherClient()
-        topic_path = client.topic_path(project_id, topic_name)
-        import base64
-        msgbytes = base64.b64decode(msg).encode('hex')
-        # msgbytes = bytes(json.dumps(msg), encoding='utf-8')
+        topic_path = client.topic_path(project_id, topic_name)        
+        msgbytes = bytes(json.dumps(msg), encoding='utf-8')
         client.publish(topic_path, data=msgbytes)
-
 
 # gcloud functions deploy pubFileMetaData --source https://source.developers.google.com/projects/blaise-dev-258914/repos/github_onsdigital_blaise-gcp-publish-bucket-metadata --runtime python37 --trigger-resource blaise-dev-258914-results --trigger-event google.storage.object.finalize --set-env-vars PROJECT_ID=blaise-dev-258914,TOPIC_NAME=blaise-dev-258914-export-topic --region=europe-west2
