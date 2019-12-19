@@ -1,7 +1,7 @@
 import json
 import os
 
-from main import *
+from main import createMsg
 
 datafile = "test-data-from-gcp.json"
 
