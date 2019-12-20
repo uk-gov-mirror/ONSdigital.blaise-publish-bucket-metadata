@@ -1,11 +1,11 @@
 def createMsg(data):
     import os
     msg = {
-        "version": 2,
+        "version": 2.1,
         "schemaVersion": 1,
         "files": [],
         "sensitivity": "High",
-        "sourceName": "gcp_blaise1",
+        "sourceName": "gcp_blaise",
         "description": "",
         "dataset": "",
         "iterationL1": "",
@@ -29,7 +29,7 @@ def createMsg(data):
     decodehash = base64.b64decode(data['md5Hash'])
     encodehash = binascii.hexlify(decodehash)
 
-    files["md5sum"] = str(encodehash) # Note GCP uses md5hash - however, Minifi needs it to be md5sum
+    files["md5sum"] = str(encodehash, 'utf-8') # Note GCP uses md5hash - however, Minifi needs it to be md5sum
     files["relativePath"] = ".\\"
     msg['files'].append(files)
 
