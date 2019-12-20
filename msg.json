@@ -1,0 +1,22 @@
+{
+    "version": 2,
+    "schemaVersion": 1,
+    "files": [
+        {
+            "sizeBytes": "26",
+            "name": "test.sps:blaise-dev-258914-results",
+            "md5sum": "b'c8366b0d8804e77ce0afe9d11d08e711'",
+            "relativePath": ".\\"
+        }
+    ],
+    "sensitivity": "High",
+    "sourceName": "gcp_blaise1",
+    "description": "Data Delivery Exchange files uploaded to GCP bucket from Blaise5",
+    "dataset": "blaise_dde",
+    "iterationL1": "TES",
+    "iterationL2": "T.SP",
+    "iterationL3": "S",
+    "iterationL4": "",
+    "manifestCreated": "2019-12-19T16:02:36.173Z",
+    "fullSizeMegabytes": "0.000026"
+}
