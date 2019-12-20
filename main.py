@@ -1,7 +1,7 @@
 def createMsg(data):
     import os
     msg = {
-        "version": 2.1,
+        "version": 3,
         "schemaVersion": 1,
         "files": [],
         "sensitivity": "High",
