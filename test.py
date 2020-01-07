@@ -14,5 +14,5 @@ msg = createMsg(data)
 
 msgbytes = bytes(json.dumps(msg), encoding='utf-8')
 
-print(str(msgbytes))
-#print(json.dumps(msg, indent=3))
+# print(str(msgbytes))
+print(json.dumps(msg, indent=3))

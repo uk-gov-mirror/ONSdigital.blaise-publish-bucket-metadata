@@ -8,7 +8,7 @@
     "md5Hash": "tyDZrDYgE53zgr+nRHQjnEQ==",
     "mediaLink": "https://www.googleapis.com/download/storage/v1/b/blaisepoc-jc-test-fs-bucket/o/test2.txt?generation=1575375262007029&alt=media",
     "metageneration": "1",
-    "name": "opn1911a.sps",
+    "name": "opn1911a.rmk.csv",
     "selfLink": "https://www.googleapis.com/storage/v1/b/blaisepoc-jc-test-fs-bucket/o/test2.txt",
     "size": "29920",
     "storageClass": "STANDARD",

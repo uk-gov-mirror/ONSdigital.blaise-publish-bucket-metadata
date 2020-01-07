@@ -34,14 +34,15 @@ def createMsg(data):
     msg['files'].append(files)
 
     fileExtn = data['name'].split(".")[1].lower()
+
     runPubSub = False
     if (fileExtn == "csv"):
         runPubSub = True
 
         msg["description"] = 'Mi Data Extract uploaded to GCP bucket from Blaise5'
         msg["dataset"] = 'blaise_mi'
-        msg["iterationL1"] = 'OPN'
-        msg["iterationL2"] = ''
+        msg["iterationL1"] = 'SurveyData'
+        msg["iterationL2"] = 'OPN'
         msg["iterationL3"] = ''
         msg["iterationL4"] = ''
 
