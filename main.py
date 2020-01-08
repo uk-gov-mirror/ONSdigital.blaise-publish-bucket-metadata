@@ -42,7 +42,7 @@ def createMsg(data):
         msg["description"] = 'Mi Data Extract uploaded to GCP bucket from Blaise5'
         msg["dataset"] = 'blaise_mi'
         msg["iterationL1"] = 'SurveyData'
-        msg["iterationL2"] = 'BL5'
+        msg["iterationL2"] = os.getenv('ON-PREM-SUBFOLDER')
         msg["iterationL3"] = ''
         msg["iterationL4"] = ''
 
@@ -52,7 +52,7 @@ def createMsg(data):
         # File needs to be in the format of opn1911a.sps
         msg["description"] = 'Data Delivery Exchange files uploaded to GCP bucket from Blaise5'
         msg["dataset"] = 'blaise_dde'
-        msg["iterationL1"] = 'BL5' # data['name'][:3].upper()
+        msg["iterationL1"] = os.getenv('ON-PREM-SUBFOLDER') # data['name'][:3].upper()
         msg["iterationL2"] = data['name'][3:7].upper()
         msg["iterationL3"] = data['name'][7:8].upper()
         msg["iterationL4"] = ''
