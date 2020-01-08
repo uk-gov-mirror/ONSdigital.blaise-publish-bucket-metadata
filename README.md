@@ -39,7 +39,7 @@ gcloud functions deploy pubFileMetaData \
   --runtime python37 \
   --trigger-resource blaise-dev-258914-results \
   --trigger-event google.storage.object.finalize \
-  --set-env-vars PROJECT_ID=blaise-dev-258914, TOPIC_NAME=blaise-dev-258914-export-topic \
+  --set-env-vars ON-PREM-SUBFOLDER=BL5,PROJECT_ID=blaise-dev-258914,TOPIC_NAME=blaise-dev-258914-export-topic \
   --region=europe-west2
 ```
 
