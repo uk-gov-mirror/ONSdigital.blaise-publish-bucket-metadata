@@ -15,7 +15,7 @@ steps:
 
 # 
 - name: 'gcr.io/cloud-builders/gcloud'
-  id: Configure user
+  id: Setup trigger
   args:
   - functions
   - deploy
