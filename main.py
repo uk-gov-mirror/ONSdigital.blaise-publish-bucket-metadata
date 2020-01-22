@@ -50,7 +50,7 @@ def createMsg(data):
     elif fileExtn == "asc" or fileExtn == "rmk" or fileExtn == "sps":
         runPubSub = True
         metaTemplate = os.path.join(os.getcwd(), "dde-meta-template.json")
-        # File needs to be in the format of opn1911a.sps
+        # File needs to be in the format of .sps
         msg["description"] = 'Data Delivery Exchange files uploaded to GCP bucket from Blaise5'
         msg["dataset"] = 'blaise_dde'
         msg["iterationL1"] = os.getenv('ON-PREM-SUBFOLDER') # data['name'][:3].upper()
@@ -69,12 +69,9 @@ def createMsg(data):
 def pubFileMetaData(data, context):
     project_id = os.environ['PROJECT_ID']
     topic_name = os.environ['TOPIC_NAME']
-    # project_id = "blaise-dev-258914"
-    # topic_name = "blaise-dev-258914-export-topic"
+
     if(project_id):
         client = pubsub_v1.PublisherClient()
         topic_path = client.topic_path(project_id, topic_name)        
         msgbytes = bytes(json.dumps(createMsg(data)), encoding='utf-8')
         client.publish(topic_path, data=msgbytes)
-
-# gcloud functions deploy pubFileMetaData --source https://source.developers.google.com/projects/blaise-dev-258914/repos/github_onsdigital_blaise-gcp-publish-bucket-metadata --runtime python37 --trigger-resource blaise-dev-258914-results --trigger-event google.storage.object.finalize --set-env-vars PROJECT_ID=blaise-dev-258914,TOPIC_NAME=blaise-dev-258914-export-topic --region=europe-west2
