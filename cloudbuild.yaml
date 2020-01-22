@@ -4,9 +4,14 @@ steps:
   id: Clone repository
   args: ['clone', 'https://github.com/ONSdigital/blaise-gcp-publish-bucket-metadata.git']
 
-- name: 'gcr.io/cloud-builders/git'
+- name: 'gcr.io/cloud-builders/gcloud'
   id: Checkout branch
-  args: ['checkout', 'LU-5110']
+  entrypoint: /bin/sh
+  args: 
+  - '-c'
+  - |
+    cd blaise-gcp-publish-bucket-metadata
+    git checkout LU-5110
 
 # 
 - name: 'gcr.io/cloud-builders/gcloud'
