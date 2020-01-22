@@ -10,7 +10,7 @@ steps:
   args: 
   - '-c'
   - |
-    cd blaise-gcp-publish-bucket-metadata
+    cd blaise-gcp-publish-bucket-metadata && \
     git checkout LU-5110
 
 # 
@@ -20,10 +20,10 @@ steps:
   - functions
   - deploy
   - pubFileMetaData 
-    --source=. 
-    --region=europe-west2 
-    --runtime=python37 
-    --trigger-bucket=blaise-dev-258914-results 
-    --trigger-resource=blaise-dev-258914-results 
-    --trigger-topic=blaise-dev-258914-export-topic 
-    --trigger-event google.storage.object.finalize
+  - --source=. 
+  - --region=europe-west2 
+  - --runtime=python37 
+  - --trigger-bucket=blaise-dev-258914-results 
+  - --trigger-resource=blaise-dev-258914-results 
+  - --trigger-topic=blaise-dev-258914-export-topic 
+  - --trigger-event google.storage.object.finalize
