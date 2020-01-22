@@ -2,7 +2,7 @@ steps:
 # Connect to the repository
 - name: 'gcr.io/cloud-builders/git'
   id: Clone repository
-  args: ['clone', 'git@github.com:ONSdigital/blaise-gcp-publish-bucket-metadata.git']
+  args: ['clone', 'https://github.com/ONSdigital/blaise-gcp-publish-bucket-metadata.git']
 
 - name: 'gcr.io/cloud-builders/git'
   id: Checkout branch
