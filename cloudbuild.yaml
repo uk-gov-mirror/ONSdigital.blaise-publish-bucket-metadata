@@ -26,4 +26,4 @@ steps:
   - --trigger-bucket=blaise-dev-258914-results 
   - --trigger-resource=blaise-dev-258914-results 
   - --trigger-topic=blaise-dev-258914-export-topic 
-  - --trigger-event google.storage.object.finalize
+  - --trigger-event=google.storage.object.finalize
