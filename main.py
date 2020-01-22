@@ -1,5 +1,10 @@
+import os
+import base64
+import binascii
+import json
+from google.cloud import pubsub_v1
+
 def createMsg(data):
-    import os
     msg = {
         "version": 3,
         "schemaVersion": 1,
@@ -21,10 +26,6 @@ def createMsg(data):
 
     files["sizeBytes"] = data['size']
     files["name"] = filename
-
-    import os
-    import base64
-    import binascii
     
     decodehash = base64.b64decode(data['md5Hash'])
     encodehash = binascii.hexlify(decodehash)
@@ -66,10 +67,6 @@ def createMsg(data):
         return msg
 
 def pubFileMetaData(data, context):
-    import os
-    import json
-    from google.cloud import pubsub_v1
-
     project_id = os.environ['PROJECT_ID']
     topic_name = os.environ['TOPIC_NAME']
     # project_id = "blaise-dev-258914"
