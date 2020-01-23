@@ -23,5 +23,5 @@ steps:
   - --source=. 
   - --region=europe-west2 
   - --runtime=python37 
-  - --trigger-bucket=blaise-dev-258914-results
-  - --set-env-vars=ON-PREM-SUBFOLDER=BL5,PROJECT_ID=blaise-dev-258914,TOPIC_NAME=blaise-dev-258914-export-topic
+  - --trigger-bucket=$PROJECT_ID-results
+  - --set-env-vars=ON-PREM-SUBFOLDER=BL5,PROJECT_ID=$PROJECT_ID,TOPIC_NAME=$PROJECT_ID-export-topic
