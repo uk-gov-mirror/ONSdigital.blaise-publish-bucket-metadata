@@ -11,7 +11,7 @@ steps:
   - '-c'
   - |
     cd blaise-gcp-publish-bucket-metadata && \
-    git checkout LU-5110
+    git checkout $_ENV
 
 # 
 - name: 'gcr.io/cloud-builders/gcloud'
