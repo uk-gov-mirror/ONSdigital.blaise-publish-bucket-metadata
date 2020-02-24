@@ -10,7 +10,7 @@ def createMsg(data):
         "schemaVersion": 1,
         "files": [],
         "sensitivity": "High",
-        "sourceName": os.environ['PROJECT_ID'].replace("ons", "gcp"),
+        "sourceName": "gcp_blaise_" + os.environ['ENV'],
         "description": "",
         "dataset": "",
         "iterationL1": "",
