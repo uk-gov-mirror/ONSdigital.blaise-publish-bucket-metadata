@@ -35,9 +35,10 @@ def createMsg(data):
     msg['files'].append(files)
 
     fileExtn = data['name'].split(".")[1].lower()
+    fileType = data['name'].split("_")[0].lower()
 
     runPubSub = False
-    if (fileExtn == "csv"):
+    if fileExtn == "zip" and fileType == "mi":
         runPubSub = True
 
         msg["description"] = 'Mi Data Extract uploaded to GCP bucket from Blaise5'
@@ -47,9 +48,9 @@ def createMsg(data):
         msg["iterationL3"] = ''
         msg["iterationL4"] = ''
 
-    elif fileExtn == "asc" or fileExtn == "rmk" or fileExtn == "sps":
+    elif fileExtn == "zip" and fileType == "dd":
         runPubSub = True
-        metaTemplate = os.path.join(os.getcwd(), "dde-meta-template.json")
+
         # File needs to be in the format of .sps
         msg["description"] = 'Data Delivery Exchange files uploaded to GCP bucket from Blaise5'
         msg["dataset"] = 'blaise_dde'
