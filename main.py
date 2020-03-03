@@ -60,7 +60,7 @@ def createMsg(data):
         msg["iterationL4"] = ''
     else:
         runPubSub = False
-        print("Filetype {} not found for DDE or MI".format(fileExtn))
+        print("File extension: {} not found or File type: {} is invalid".format(fileExtn, fileType))
 
     if (runPubSub):
         msg["manifestCreated"] = data['timeCreated']
