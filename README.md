@@ -1,10 +1,22 @@
 ## Publish a files metadata onto PubSub queue when a file is uploaded to GCP bucket. **[LU-4496](https://collaborate2.ons.gov.uk/jira/browse/LU-4496)**
 
-The following filetypes are created or updated on a specified bucket, the message (below) is published to the Pub/Sub queue with file meta data injected for file types :
+This function places a message to the Pub/Sub queue when .zip files are created in the bucket.
+
+The name of the .zip file being created in the bucket must have a prefix of either 'mi_' or 'dd_' (for MI CSV extract or Data Delivery).  e.g. mi_OPN2002A_03032020_1355.zip
+
+There is validation in the function which ensures that files have a .zip extension and that the .zip file is appropriately named, so either starts with 'mi_' or 'dd_'
+This has been done so that we differentiate between the different zip file types and thus creates a different PubSub message.
+
+Within the .zip file the following filetypes will be present:-
+
+For Data Delivery:
 - *.sps
 - *.asc
-- *.rmk  
-- *.csv (for MI)
+- *.rmk
+
+For MI CSV Extract:
+- *.csv
+
 
 This is based on dde/mi-meta-template.json where 'Files', 'iterationL2-4', 'manifestCreated' and 'fullSizeMegabytes' meta data substituted.
 
