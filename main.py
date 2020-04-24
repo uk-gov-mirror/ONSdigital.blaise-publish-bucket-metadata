@@ -1,11 +1,16 @@
+import os
+import base64
+import binascii
+import json
+from google.cloud import pubsub_v1
+
 def createMsg(data):
-    import os
     msg = {
         "version": 3,
         "schemaVersion": 1,
         "files": [],
         "sensitivity": "High",
-        "sourceName": "gcp_blaise",
+        "sourceName": "gcp_blaise_" + os.environ['ENV'],
         "description": "",
         "dataset": "",
         "iterationL1": "",
@@ -21,10 +26,6 @@ def createMsg(data):
 
     files["sizeBytes"] = data['size']
     files["name"] = filename
-
-    import os
-    import base64
-    import binascii
     
     decodehash = base64.b64decode(data['md5Hash'])
     encodehash = binascii.hexlify(decodehash)
@@ -34,9 +35,10 @@ def createMsg(data):
     msg['files'].append(files)
 
     fileExtn = data['name'].split(".")[1].lower()
+    fileType = data['name'].split("_")[0].lower()
 
     runPubSub = False
-    if (fileExtn == "csv"):
+    if fileExtn == "zip" and fileType == "mi":
         runPubSub = True
 
         msg["description"] = 'Mi Data Extract uploaded to GCP bucket from Blaise5'
@@ -46,10 +48,10 @@ def createMsg(data):
         msg["iterationL3"] = ''
         msg["iterationL4"] = ''
 
-    elif fileExtn == "asc" or fileExtn == "rmk" or fileExtn == "sps":
+    elif fileExtn == "zip" and fileType == "dd":
         runPubSub = True
-        metaTemplate = os.path.join(os.getcwd(), "dde-meta-template.json")
-        # File needs to be in the format of opn1911a.sps
+
+        # File needs to be in the format of .sps
         msg["description"] = 'Data Delivery Exchange files uploaded to GCP bucket from Blaise5'
         msg["dataset"] = 'blaise_dde'
         msg["iterationL1"] = os.getenv('ON-PREM-SUBFOLDER') # data['name'][:3].upper()
@@ -58,7 +60,7 @@ def createMsg(data):
         msg["iterationL4"] = ''
     else:
         runPubSub = False
-        print("Filetype {} not found for DDE or MI".format(fileExtn))
+        print("File extension: {} not found or File type: {} is invalid".format(fileExtn, fileType))
 
     if (runPubSub):
         msg["manifestCreated"] = data['timeCreated']
@@ -66,18 +68,11 @@ def createMsg(data):
         return msg
 
 def pubFileMetaData(data, context):
-    import os
-    import json
-    from google.cloud import pubsub_v1
-
     project_id = os.environ['PROJECT_ID']
     topic_name = os.environ['TOPIC_NAME']
-    # project_id = "blaise-dev-258914"
-    # topic_name = "blaise-dev-258914-export-topic"
+
     if(project_id):
         client = pubsub_v1.PublisherClient()
         topic_path = client.topic_path(project_id, topic_name)        
         msgbytes = bytes(json.dumps(createMsg(data)), encoding='utf-8')
         client.publish(topic_path, data=msgbytes)
-
-# gcloud functions deploy pubFileMetaData --source https://source.developers.google.com/projects/blaise-dev-258914/repos/github_onsdigital_blaise-gcp-publish-bucket-metadata --runtime python37 --trigger-resource blaise-dev-258914-results --trigger-event google.storage.object.finalize --set-env-vars PROJECT_ID=blaise-dev-258914,TOPIC_NAME=blaise-dev-258914-export-topic --region=europe-west2
