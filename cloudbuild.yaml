@@ -1,5 +1,5 @@
 steps:
-# Connect to the repository
+
 - name: 'gcr.io/cloud-builders/git'
   id: Clone repository
   args: ['clone', 'https://github.com/ONSdigital/blaise-gcp-publish-bucket-metadata.git']
@@ -13,13 +13,12 @@ steps:
     cd blaise-gcp-publish-bucket-metadata && \
     git checkout $_ENV
 
-# 
 - name: 'gcr.io/cloud-builders/gcloud'
   id: Create function
   args:
   - functions
   - deploy
-  - pubFileMetaData 
+  - publishMsg 
   - --source=. 
   - --region=europe-west2 
   - --runtime=python37 
