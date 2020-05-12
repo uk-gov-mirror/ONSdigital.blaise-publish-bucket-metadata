@@ -5,6 +5,7 @@ import json
 from google.cloud import pubsub_v1
 
 def createMsg(data):
+
     msg = {
         "version": 3,
         "schemaVersion": 1,
@@ -23,51 +24,45 @@ def createMsg(data):
 
     files = {}
     filename = data['name'] + ":" + data['bucket']
-
     files["sizeBytes"] = data['size']
     files["name"] = filename
-    
     decodehash = base64.b64decode(data['md5Hash'])
     encodehash = binascii.hexlify(decodehash)
-
-    files["md5sum"] = str(encodehash, 'utf-8') # Note GCP uses md5hash - however, Minifi needs it to be md5sum
+    files["md5sum"] = str(encodehash, 'utf-8') # Note GCP uses md5hash - however, MiNiFi needs it to be md5sum
     files["relativePath"] = ".\\"
     msg['files'].append(files)
-
     fileExtn = data['name'].split(".")[1].lower()
     fileType = data['name'].split("_")[0].lower()
 
     runPubSub = False
+
     if fileExtn == "zip" and fileType == "mi":
         runPubSub = True
-
-        msg["description"] = 'Mi Data Extract uploaded to GCP bucket from Blaise5'
+        msg["description"] = 'Management Information files uploaded to GCP bucket from Blaise5'
         msg["dataset"] = 'blaise_mi'
         msg["iterationL1"] = 'SurveyData'
         msg["iterationL2"] = os.getenv('ON-PREM-SUBFOLDER')
         msg["iterationL3"] = ''
         msg["iterationL4"] = ''
-
     elif fileExtn == "zip" and fileType == "dd":
         runPubSub = True
-
-        # File needs to be in the format of .sps
-        msg["description"] = 'Data Delivery Exchange files uploaded to GCP bucket from Blaise5'
+        msg["description"] = 'Data Delivery files uploaded to GCP bucket from Blaise5'
         msg["dataset"] = 'blaise_dde'
-        msg["iterationL1"] = os.getenv('ON-PREM-SUBFOLDER') # data['name'][:3].upper()
+        msg["iterationL1"] = os.getenv('ON-PREM-SUBFOLDER')
         msg["iterationL2"] = data['name'][3:7].upper()
         msg["iterationL3"] = data['name'][7:8].upper()
         msg["iterationL4"] = ''
     else:
         runPubSub = False
-        print("File extension: {} not found or File type: {} is invalid".format(fileExtn, fileType))
+        print("File extension {} not found or file type {} is invalid".format(fileExtn, fileType))
 
     if (runPubSub):
         msg["manifestCreated"] = data['timeCreated']
         msg["fullSizeMegabytes"] = "{:.6f}".format(int(data['size'])/1000000)
         return msg
 
-def pubFileMetaData(data, context):
+def publishMsg(data, context):
+
     project_id = os.environ['PROJECT_ID']
     topic_name = os.environ['TOPIC_NAME']
 

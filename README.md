@@ -1,82 +1,9 @@
-## Publish a files metadata onto PubSub queue when a file is uploaded to GCP bucket. **[LU-4496](https://collaborate2.ons.gov.uk/jira/browse/LU-4496)**
+# blaise-publish-bucket-metadata
 
-This function places a message to the Pub/Sub queue when .zip files are created in the bucket.
+Cloud function to create and publish metadata to a pub/sub topic about a zip file uploaded to a bucket.
 
-The name of the .zip file being created in the bucket must have a prefix of either 'mi_' or 'dd_' (for MI CSV extract or Data Delivery).  e.g. mi_OPN2002A_03032020_1355.zip
+Zip files uploaded to said bucket must be prefixed with "mi_" for Management Information or "dd_" for Data Delivery and be unique via a timestamp. Exampe:
 
-There is validation in the function which ensures that files have a .zip extension and that the .zip file is appropriately named, so either starts with 'mi_' or 'dd_'
-This has been done so that we differentiate between the different zip file types and thus creates a different PubSub message.
+  mi_opn2001a_01012020_1200.zip
 
-Within the .zip file the following filetypes will be present:-
-
-For Data Delivery:
-- *.sps
-- *.asc
-- *.rmk
-
-For MI CSV Extract:
-- *.csv
-
-
-This is based on dde/mi-meta-template.json where 'Files', 'iterationL2-4', 'manifestCreated' and 'fullSizeMegabytes' meta data substituted.
-
-```json
-{
-    "version": 1,
-    "files": [{  // the following 4 items Updated by GCP storage trigger function pubFileMetaData
-            "sizeBytes": "17",
-            "name": "test.csv:blaise-dev-258914-results",  // NOTE bucket name is appended to filename i.e. filename:bucketname
-            "md5sum": "testmd5sumdfer34==",
-            "relativePath": ".\\"
-        }], 
-    "sensitivity": "High",
-    "sourceName": "gcp_blaise",
-    "description": "Creation of Blaise Manifest for DDE files sent to GCP bucket",
-    "iterationL1": "ldata12",
-                "iterationL2": "opn", // Updated by GCP storage trigger function pubFileMetaData - first 3 letters of filename
-                "iterationL3": "1911", // Updated by GCP storage trigger function pubFileMetaData - chars 4-8 of filename
-                "iterationL4": "a", // Updated by GCP storage trigger function pubFileMetaData - 9 char of filename
-    "dataset": "blaise_dde",
-    "schemaVersion": 1,
-    "manifestCreated": "",
-    "fullSizeMegabytes": ""
-}
-```
-
-## To deploy the function run the following from the GCP console
-
-```
-gcloud functions deploy pubFileMetaData \
-  --source https://source.developers.google.com/projects/blaise-dev-258914/repos/github_onsdigital_blaise-gcp-publish-bucket-metadata \
-  --runtime python37 \
-  --trigger-resource blaise-dev-258914-results \
-  --trigger-event google.storage.object.finalize \
-  --set-env-vars ON-PREM-SUBFOLDER=BL5,PROJECT_ID=blaise-dev-258914,TOPIC_NAME=blaise-dev-258914-export-topic \
-  --region=europe-west2
-```
-
-```
-Deploying function (may take a while - up to 2 minutes)...done.
-availableMemoryMb: 256
-entryPoint: pubFileMetaData
-environmentVariables:
-  PROJECT_ID: blaise-dev-258914
-  TOPIC_NAME: blaise-dev-258914-export-topic
-eventTrigger:
-  eventType: google.storage.object.finalize
-  failurePolicy: {}
-  resource: projects/_/buckets/blaise-dev-258914-results
-  service: storage.googleapis.com
-labels:
-  deployment-tool: cli-gcloud
-name: projects/blaise-dev-258914/locations/europe-west2/functions/pubFileMetaData
-runtime: python37
-serviceAccountEmail: blaise-dev-258914@appspot.gserviceaccount.com
-sourceRepository:
-  deployedUrl: https://source.developers.google.com/projects/blaise-dev-258914/repos/github_onsdigital_blaise-gcp-publish-bucket-metadata/revisions/a508a7800f7cf7d1e83f312b0f9e13ff12c7c5a0/paths/
-  url: https://source.developers.google.com/projects/blaise-dev-258914/repos/github_onsdigital_blaise-gcp-publish-bucket-metadata/moveable-aliases/master/paths/
-status: ACTIVE
-timeout: 60s
-updateTime: '2019-12-09T14:47:24Z'
-versionId: '1'
-```
+Appropriate zip file metadata messages are published to a Pub/Sub topic for MiNiFi to consume and transfer the zip files on-premises.
