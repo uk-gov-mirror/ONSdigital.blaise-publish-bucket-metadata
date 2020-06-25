@@ -5,13 +5,12 @@ steps:
   args: ['clone', 'https://github.com/ONSdigital/blaise-gcp-publish-bucket-metadata.git']
 
 - name: 'gcr.io/cloud-builders/gcloud'
-  id: Checkout branch
+  id: CD to project
   entrypoint: /bin/sh
   args: 
   - '-c'
   - |
-    cd blaise-gcp-publish-bucket-metadata && \
-    git checkout $_ENV
+    cd blaise-gcp-publish-bucket-metadata
 
 - name: 'gcr.io/cloud-builders/gcloud'
   id: Create function
