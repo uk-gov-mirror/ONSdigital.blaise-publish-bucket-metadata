@@ -4,14 +4,6 @@ steps:
   id: Clone repository
   args: ['clone', 'https://github.com/ONSdigital/blaise-gcp-publish-bucket-metadata.git']
 
-- name: 'gcr.io/cloud-builders/gcloud'
-  id: Checkout branch
-  entrypoint: /bin/sh
-  args: 
-  - '-c'
-  - |
-    cd blaise-gcp-publish-bucket-metadata && \
-    git checkout $_ENV
 
 - name: 'gcr.io/cloud-builders/gcloud'
   id: Create function
