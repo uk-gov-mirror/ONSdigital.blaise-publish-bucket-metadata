@@ -4,8 +4,8 @@ import binascii
 import json
 from google.cloud import pubsub_v1
 
-def createMsg(data):
 
+def createMsg(data):
     msg = {
         "version": 3,
         "schemaVersion": 1,
@@ -28,7 +28,7 @@ def createMsg(data):
     files["name"] = filename
     decodehash = base64.b64decode(data['md5Hash'])
     encodehash = binascii.hexlify(decodehash)
-    files["md5sum"] = str(encodehash, 'utf-8') # Note GCP uses md5hash - however, MiNiFi needs it to be md5sum
+    files["md5sum"] = str(encodehash, 'utf-8')  # Note GCP uses md5hash - however, MiNiFi needs it to be md5sum
     files["relativePath"] = ".\\"
     msg['files'].append(files)
     fileExtn = data['name'].split(".")[1].lower()
@@ -37,15 +37,13 @@ def createMsg(data):
     runPubSub = False
 
     if fileExtn == "zip" and fileType == "mi":
-        runPubSub = True
         msg["description"] = 'Management Information files uploaded to GCP bucket from Blaise5'
         msg["dataset"] = 'blaise_mi'
-        msg["iterationL1"] = 'SurveyData'
-        msg["iterationL2"] = os.getenv('ON-PREM-SUBFOLDER')
+        msg["iterationL1"] = os.getenv('ON-PREM-SUBFOLDER')
+        msg["iterationL2"] = ''
         msg["iterationL3"] = ''
         msg["iterationL4"] = ''
     elif fileExtn == "zip" and fileType == "dd":
-        runPubSub = True
         msg["description"] = 'Data Delivery files uploaded to GCP bucket from Blaise5'
         msg["dataset"] = 'blaise_dde'
         msg["iterationL1"] = os.getenv('ON-PREM-SUBFOLDER')
@@ -53,21 +51,36 @@ def createMsg(data):
         msg["iterationL3"] = data['name'][7:8].upper()
         msg["iterationL4"] = ''
     else:
-        runPubSub = False
         print("File extension {} not found or file type {} is invalid".format(fileExtn, fileType))
+        return None
 
-    if (runPubSub):
-        msg["manifestCreated"] = data['timeCreated']
-        msg["fullSizeMegabytes"] = "{:.6f}".format(int(data['size'])/1000000)
-        return msg
+    msg["manifestCreated"] = data['timeCreated']
+    msg["fullSizeMegabytes"] = "{:.6f}".format(int(data['size']) / 1000000)
+    print(f"Message created {msg}")
+    return msg
+
 
 def publishMsg(data, context):
+    project_id = os.getenv('PROJECT_ID', None)
+    topic_name = os.getenv('TOPIC_NAME', None)
 
-    project_id = os.environ['PROJECT_ID']
-    topic_name = os.environ['TOPIC_NAME']
+    print(f"Configuration: Project ID: {project_id}")
+    print(f"Configuration: Topic Name: {topic_name}")
+    print(f"Configuration: File name: {data['name']}")
+    print(f"Configuration: Bucket Name: {data['bucket']}")
+    print(f"Configuration: ON-PREM-SUBFOLDER: {os.getenv('ON-PREM-SUBFOLDER', None)}")
 
-    if(project_id):
+    if project_id is None:
+        print("project_id not set, publish failed")
+        return
+
+
+    msg = createMsg(data)
+    print(f"Message {msg}")
+    if msg is not None:
         client = pubsub_v1.PublisherClient()
-        topic_path = client.topic_path(project_id, topic_name)        
-        msgbytes = bytes(json.dumps(createMsg(data)), encoding='utf-8')
-        client.publish(topic_path, data=msgbytes)
+        topic_path = client.topic_path(project_id, topic_name)
+        msg_bytes = bytes(json.dumps(msg), encoding='utf-8')
+        client.publish(topic_path, data=msg_bytes)
+        print(f"Message published")
+
