@@ -31,7 +31,7 @@ steps:
     - functions
     - deploy
     - publishMsg 
-    - --source=gs://ons-blaise-dev-blaise-cloud-functions-source/blaise-publish-bucket-metadata.zip 
+    - --source=gs://ons-blaise-_$ENV-blaise-cloud-functions-source/blaise-publish-bucket-metadata.zip 
     - --region=europe-west2 
     - --runtime=python37 
     - --trigger-bucket=$PROJECT_ID-results
