@@ -20,7 +20,7 @@ steps:
     args:
       - "-c"
       - |
-        gsutil cp /mnt/data/blaise-publish-bucket-metadata.zip gs://ons-blaise-dev-blaise-cloud-functions-source/
+        gsutil cp /mnt/data/blaise-publish-bucket-metadata.zip gs://ons-blaise-$_ENV-blaise-cloud-functions-source/
     volumes:
       - name: "data"
         path: /mnt/data
@@ -31,7 +31,7 @@ steps:
     - functions
     - deploy
     - publishMsg 
-    - --source=gs://ons-blaise-dev-blaise-cloud-functions-source/blaise-publish-bucket-metadata.zip 
+    - --source=gs://ons-blaise-$_ENV-blaise-cloud-functions-source/blaise-publish-bucket-metadata.zip 
     - --region=europe-west2 
     - --runtime=python37 
     - --trigger-bucket=$PROJECT_ID-results
