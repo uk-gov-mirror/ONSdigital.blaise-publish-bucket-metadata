@@ -46,7 +46,7 @@ def createMsg(data):
     elif fileExtn == "zip" and fileType == "dd":
         msg["description"] = 'Data Delivery files uploaded to GCP bucket from Blaise5'
         msg["dataset"] = 'blaise_dde'
-        msg["iterationL4"] = 'SYSTEMS'
+        msg["iterationL1"] = 'SYSTEMS'
         msg["iterationL2"] = os.getenv('ON-PREM-SUBFOLDER')
         msg["iterationL3"] = data['name'][3:6].upper()
         msg["iterationL4"] = data['name'][3:11].upper()
