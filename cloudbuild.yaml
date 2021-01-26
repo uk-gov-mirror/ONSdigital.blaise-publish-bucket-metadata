@@ -20,7 +20,7 @@ steps:
     args:
       - "-c"
       - |
-        gsutil cp /mnt/data/blaise-publish-bucket-metadata.zip gs://ons-blaise-$_ENV-blaise-cloud-functions-source/
+        gsutil cp /mnt/data/blaise-publish-bucket-metadata.zip gs://ons-blaise-v2-$_ENV-blaise-cloud-functions-source/
     volumes:
       - name: "data"
         path: /mnt/data
@@ -36,3 +36,20 @@ steps:
     - --runtime=python37 
     - --trigger-bucket=$PROJECT_ID-results
     - --set-env-vars=ON-PREM-SUBFOLDER=BL5-$_ENV,PROJECT_ID=$PROJECT_ID,TOPIC_NAME=$PROJECT_ID-export-topic,ENV=$_ENV
+    
+  - name: "gcr.io/cloud-builders/gcloud"
+    id: "Slack Notify"
+    waitFor: ["Deploy service"]
+    entrypoint: "/bin/bash"
+    args:
+      - "-c"
+      - |
+        python3 -u slack/slack-notify.py;
+    env:
+      - 'PROJECT_ID=$PROJECT_ID'
+      - 'BUILD_ID=$BUILD_ID'
+      - 'REPO_NAME=$REPO_NAME'
+      - 'COMMIT_SHA=$COMMIT_SHA'
+      - 'SHORT_SHA=$SHORT_SHA'
+      - 'SLACK_CHANNEL=$_SLACK_CHANNEL'
+      - 'SLACK_WEBHOOK=$_SLACK_WEBHOOK'
