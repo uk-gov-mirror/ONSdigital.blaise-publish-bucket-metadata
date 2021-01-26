@@ -20,7 +20,7 @@ steps:
     args:
       - "-c"
       - |
-        gsutil cp /mnt/data/blaise-publish-bucket-metadata.zip gs://ons-blaise-v2-$_ENV-blaise-cloud-functions-source/
+        gsutil cp /mnt/data/blaise-publish-bucket-metadata.zip gs://$PROJECT_ID-blaise-cloud-functions-source/
     volumes:
       - name: "data"
         path: /mnt/data
