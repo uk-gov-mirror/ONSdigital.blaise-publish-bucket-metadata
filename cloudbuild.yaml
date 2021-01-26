@@ -39,7 +39,7 @@ steps:
     
   - name: "gcr.io/cloud-builders/gcloud"
     id: "Slack Notify"
-    waitFor: ["Deploy service"]
+    waitFor: ["Create function"]
     entrypoint: "/bin/bash"
     args:
       - "-c"
