@@ -30,13 +30,13 @@ steps:
     args:
     - functions
     - deploy
-    - publishMsg 
-    - --source=gs://$PROJECT_ID-cloud-functions-source/blaise-publish-bucket-metadata.zip 
-    - --region=europe-west2 
-    - --runtime=python37 
+    - publishMsg
+    - --source=gs://$PROJECT_ID-cloud-functions-source/blaise-publish-bucket-metadata.zip
+    - --region=europe-west2
+    - --runtime=python37
     - --trigger-bucket=$PROJECT_ID-nifi
-    - --set-env-vars=ON-PREM-SUBFOLDER=BL5-$_ENV,PROJECT_ID=$PROJECT_ID,TOPIC_NAME=$PROJECT_ID-export-topic,ENV=$_ENV
-    
+    - --set-env-vars=ON-PREM-SUBFOLDER=BL5-$_ENV,PROJECT_ID=$PROJECT_ID,TOPIC_NAME=$_NIFI_TOPIC,ENV=$_ENV
+
   - name: "gcr.io/cloud-builders/gcloud"
     id: "Slack Notify"
     waitFor: ["Create function"]
