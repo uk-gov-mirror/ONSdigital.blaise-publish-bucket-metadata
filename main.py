@@ -3,8 +3,7 @@ import base64
 import binascii
 import json
 from google.cloud import pubsub_v1
-from data-delivery-status-functions import *
-
+from datadeliverystatus import data_delivery_status_functions as dds
 
 def createMsg(data):
     msg = {
@@ -66,7 +65,7 @@ def publishMsg(data, context):
         project_id = os.getenv('PROJECT_ID', None)
         topic_name = os.getenv('TOPIC_NAME', None)
 
-        updateDataDeliveryStatus(data['name'], 'in_nifi_bucket')
+        dds.update(data['name'], 'in_nifi_bucket')
 
         print(f"Configuration: Project ID: {project_id}")
         print(f"Configuration: Topic Name: {topic_name}")
@@ -78,7 +77,6 @@ def publishMsg(data, context):
             print("project_id not set, publish failed")
             return
 
-
         msg = createMsg(data)
         print(f"Message {msg}")
         if msg is not None:
@@ -87,9 +85,9 @@ def publishMsg(data, context):
             msg_bytes = bytes(json.dumps(msg), encoding='utf-8')
             client.publish(topic_path, data=msg_bytes)
             print(f"Message published")
-            updateDataDeliveryStatus(data['name'], 'nifi_notified')
+            dds.update(data['name'], 'nifi_notified')
 
-    except Exception:
-        errorDataDeliveryStatus(data['name'], 'errored', sys.exc_info()[0])
+    except Exception as error:
+        dds.error(data['name'], 'errored', error)
 
 
