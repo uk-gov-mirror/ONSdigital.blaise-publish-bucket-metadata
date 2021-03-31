@@ -3,7 +3,7 @@ import base64
 import binascii
 import json
 from google.cloud import pubsub_v1
-
+from datadeliverystatus import data_delivery_status_functions as dds
 
 def createMsg(data):
     msg = {
@@ -61,26 +61,33 @@ def createMsg(data):
 
 
 def publishMsg(data, context):
-    project_id = os.getenv('PROJECT_ID', None)
-    topic_name = os.getenv('TOPIC_NAME', None)
+    try:
+        project_id = os.getenv('PROJECT_ID', None)
+        topic_name = os.getenv('TOPIC_NAME', None)
 
-    print(f"Configuration: Project ID: {project_id}")
-    print(f"Configuration: Topic Name: {topic_name}")
-    print(f"Configuration: File name: {data['name']}")
-    print(f"Configuration: Bucket Name: {data['bucket']}")
-    print(f"Configuration: ON-PREM-SUBFOLDER: {os.getenv('ON-PREM-SUBFOLDER', None)}")
+        dds.update(data['name'], 'in_nifi_bucket')
 
-    if project_id is None:
-        print("project_id not set, publish failed")
-        return
+        print(f"Configuration: Project ID: {project_id}")
+        print(f"Configuration: Topic Name: {topic_name}")
+        print(f"Configuration: File name: {data['name']}")
+        print(f"Configuration: Bucket Name: {data['bucket']}")
+        print(f"Configuration: ON-PREM-SUBFOLDER: {os.getenv('ON-PREM-SUBFOLDER', None)}")
 
+        if project_id is None:
+            print("project_id not set, publish failed")
+            return
 
-    msg = createMsg(data)
-    print(f"Message {msg}")
-    if msg is not None:
-        client = pubsub_v1.PublisherClient()
-        topic_path = client.topic_path(project_id, topic_name)
-        msg_bytes = bytes(json.dumps(msg), encoding='utf-8')
-        client.publish(topic_path, data=msg_bytes)
-        print(f"Message published")
+        msg = createMsg(data)
+        print(f"Message {msg}")
+        if msg is not None:
+            client = pubsub_v1.PublisherClient()
+            topic_path = client.topic_path(project_id, topic_name)
+            msg_bytes = bytes(json.dumps(msg), encoding='utf-8')
+            client.publish(topic_path, data=msg_bytes)
+            print(f"Message published")
+            dds.update(data['name'], 'nifi_notified')
+
+    except Exception as error:
+        dds.error(data['name'], 'errored', error)
+
 
