@@ -1,9 +1,10 @@
-import os
 import base64
 import binascii
 import json
-from google.cloud import pubsub_v1
+import os
+
 import blaise_dds
+from google.cloud import pubsub_v1
 
 
 def createMsg(data):
