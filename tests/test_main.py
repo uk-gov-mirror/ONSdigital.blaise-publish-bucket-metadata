@@ -38,7 +38,7 @@ def test_publishMsg_dd(mock_pubsub, mock_update_state, dd_event):
                 "schemaVersion": 1,
                 "files": [
                     {
-                        "sizeBytes": 20,
+                        "sizeBytes": "20",
                         "name": "dd_OPN2102R_0103202021_16428.zip:ons-blaise-v2-nifi",
                         "md5sum": "d1ad7875be9ee3c6fde3b6f9efdf3c6b67fad78ebd7f6dbc",
                         "relativePath": ".\\",
@@ -89,7 +89,7 @@ def test_publishMsg_mi(mock_pubsub, mock_update_state, mi_event):
                 "schemaVersion": 1,
                 "files": [
                     {
-                        "sizeBytes": 20,
+                        "sizeBytes": "20",
                         "name": "mi_foobar.zip:ons-blaise-v2-nifi",
                         "md5sum": "d1ad7875be9ee3c6fde3b6f9efdf3c6b67fad78ebd7f6dbc",
                         "relativePath": ".\\",
