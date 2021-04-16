@@ -18,13 +18,7 @@ def size_in_megabytes(size_in_bytes):
     return "{:.6f}".format(int(size_in_bytes) / 1000000)
 
 
-def createMsg(event, config):
-    decode_hash = base64.b64decode(event["md5Hash"])
-    encode_hash = binascii.hexlify(decode_hash)
-    md5sum = str(
-        encode_hash, "utf-8"
-    )  # Note GCP uses md5hash - however, MiNiFi needs it to be md5sum
-
+def create_message(event, config):
     file = File(
         name=f"{event['name']}:{event['bucket']}",
         sizeBytes=event["size"],
@@ -37,7 +31,7 @@ def createMsg(event, config):
         description="",
         dataset="",
         manifestCreated=event["timeCreated"],
-        fullSizeMegabytes="{:.6f}".format(int(event["size"]) / 1000000),
+        fullSizeMegabytes=size_in_megabytes(event["size"]),
         files=[file],
     )
 
@@ -85,7 +79,7 @@ def publishMsg(event, _context):
             print("project_id not set, publish failed")
             return
 
-        msg = createMsg(event, config)
+        msg = create_message(event, config)
         print(f"Message {msg}")
         if msg is not None:
             client = pubsub_v1.PublisherClient()

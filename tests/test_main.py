@@ -5,7 +5,7 @@ from unittest import mock
 import blaise_dds
 from google.cloud.pubsub_v1 import PublisherClient
 
-from main import publishMsg
+from main import publishMsg, md5hash_to_md5sum
 
 
 @mock.patch.dict(
@@ -156,3 +156,6 @@ def test_project_id_not_set(mock_update_state, dd_event, capsys):
         + "Configuration: ON-PREM-SUBFOLDER: None\n"
         + "project_id not set, publish failed\n"
     )
+
+def test_md5hash_to_md5sum(md5hash):
+    assert md5hash_to_md5sum(md5hash) == "d1ad7875be9ee3c6fde3b6f9efdf3c6b67fad78ebd7f6dbc"
