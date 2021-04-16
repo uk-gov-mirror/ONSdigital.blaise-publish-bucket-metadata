@@ -21,7 +21,7 @@ Create a virtual environment:
 On MacOS
 ```
 python3 -m venv venv  
-source venv/bin/activate (this will run a .bat file)
+
 ```
 On Windows
 ```
