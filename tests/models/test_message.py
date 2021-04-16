@@ -1,4 +1,5 @@
 import json
+import pytest
 
 from models.message import File, Message
 
@@ -35,3 +36,16 @@ def test_message_json():
         "manifestCreated": "my_date",
         "fullSizeMegabytes": "1",
     }
+
+
+def test_file_extension(file):
+    assert file.extension() == ".zip"
+
+
+def test_file_filename(file):
+    assert file.filename() == "dd_file.zip"
+
+@pytest.mark.parametrize("file_name,file_type", [("dd_file.zip", "dd"),("mi_file.zip", "mi")])
+def test_file_file_type(file, file_name, file_type):
+    file.name = f"{file_name}:my-bucket-name"
+    assert file.type() == file_type

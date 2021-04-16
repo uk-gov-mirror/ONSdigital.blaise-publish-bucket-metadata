@@ -1,4 +1,5 @@
 import json
+import pathlib
 from dataclasses import asdict, dataclass
 from typing import List
 
@@ -9,6 +10,15 @@ class File:
     sizeBytes: str
     md5sum: str
     relativePath: str
+
+    def extension(self):
+        return pathlib.Path(self.filename()).suffix
+
+    def filename(self):
+        return self.name.split(":")[0]
+
+    def type(self):
+        return self.name.split("_")[0]
 
 
 @dataclass

@@ -5,3 +5,4 @@ __pycache__
 requirements.txt
 .vscode
 .idea
+.DS_Store

@@ -35,16 +35,13 @@ def create_message(event, config):
         files=[file],
     )
 
-    fileExtn = event["name"].split(".")[1].lower()
-    fileType = event["name"].split("_")[0].lower()
-
-    if fileExtn == "zip" and fileType == "mi":
+    if file.extension() == ".zip" and file.type() == "mi":
         msg.description = (
             "Management Information files uploaded to GCP bucket from Blaise5"
         )
         msg.dataset = "blaise_mi"
         msg.iterationL1 = config.on_prem_subfolder
-    elif fileExtn == "zip" and fileType == "dd":
+    elif file.extension() == ".zip" and file.type() == "dd":
         msg.description = "Data Delivery files uploaded to GCP bucket from Blaise5"
         msg.dataset = "blaise_dde"
         msg.iterationL1 = "SYSTEMS"
@@ -54,7 +51,7 @@ def create_message(event, config):
     else:
         print(
             "File extension {} not found or file type {} is invalid".format(
-                fileExtn, fileType
+                file.extension(), file.type()
             )
         )
         return None

@@ -1,5 +1,7 @@
 import pytest
 
+from models.message import File
+
 
 @pytest.fixture
 def md5hash():
@@ -26,3 +28,13 @@ def mi_event(md5hash):
         "size": "20",
         "timeCreated": "0103202021_16428",
     }
+
+
+@pytest.fixture
+def file():
+    return File(
+        name="dd_file.zip:my-bucket-name",
+        sizeBytes="20",
+        md5sum="dasdasd",
+        relativePath="./",
+    )
