@@ -23,3 +23,12 @@ If you just want to run the tests:
 poetry install
 make test
 ```
+
+## Configuring your IDE
+
+You will probably need to configure the python interpreter in your IDE to use your virtual env, the easiest way to get
+the python path is to run:
+
+```sh
+echo "$(poetry env info | grep Path | awk '{print $2}')/bin/python"
+```
