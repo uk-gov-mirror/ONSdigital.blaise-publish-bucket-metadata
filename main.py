@@ -33,22 +33,32 @@ def createMsg(event):
     files["md5sum"] = str(
         encodehash, "utf-8"
     )  # Note GCP uses md5hash - however, MiNiFi needs it to be md5sum
-    files["relativePath"] = ".\\"
-    msg["files"].append(files)
+
+    file = File(
+        name=f"{event['name']}:{event['bucket']}",
+        sizeBytes=event["size"],
+        md5sum=md5sum,
+        relativePath=".\\",
+    )
+
+    msg = Message(
+        sourceName=f"gcp_blaise_{config.env}",
+        description="",
+        dataset="",
+        manifestCreated=event["timeCreated"],
+        fullSizeMegabytes="{:.6f}".format(int(event["size"]) / 1000000),
+        files=[file],
+    )
+
     fileExtn = event["name"].split(".")[1].lower()
     fileType = event["name"].split("_")[0].lower()
 
-    runPubSub = False
-
     if fileExtn == "zip" and fileType == "mi":
-        msg[
-            "description"
-        ] = "Management Information files uploaded to GCP bucket from Blaise5"
-        msg["dataset"] = "blaise_mi"
-        msg["iterationL1"] = os.getenv("ON-PREM-SUBFOLDER")
-        msg["iterationL2"] = ""
-        msg["iterationL3"] = ""
-        msg["iterationL4"] = ""
+        msg.description = (
+            "Management Information files uploaded to GCP bucket from Blaise5"
+        )
+        msg.dataset = "blaise_mi"
+        msg.iterationL1 = config.on_prem_subfolder
     elif fileExtn == "zip" and fileType == "dd":
         msg["description"] = "Data Delivery files uploaded to GCP bucket from Blaise5"
         msg["dataset"] = "blaise_dde"
