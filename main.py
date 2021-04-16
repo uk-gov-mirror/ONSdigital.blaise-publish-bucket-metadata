@@ -8,6 +8,16 @@ from models.config import Config
 from models.message import File, Message
 
 
+def md5hash_to_md5sum(md5hash):
+    decode_hash = base64.b64decode(md5hash)
+    encoded_hash = binascii.hexlify(decode_hash)
+    return str(encoded_hash, "utf-8")
+
+
+def size_in_megabytes(size_in_bytes):
+    return "{:.6f}".format(int(size_in_bytes) / 1000000)
+
+
 def createMsg(event, config):
     decode_hash = base64.b64decode(event["md5Hash"])
     encode_hash = binascii.hexlify(decode_hash)
@@ -18,7 +28,7 @@ def createMsg(event, config):
     file = File(
         name=f"{event['name']}:{event['bucket']}",
         sizeBytes=event["size"],
-        md5sum=md5sum,
+        md5sum=md5hash_to_md5sum(event['md5Hash']),
         relativePath=".\\",
     )
 
