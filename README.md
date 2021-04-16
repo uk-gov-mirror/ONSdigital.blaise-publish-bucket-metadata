@@ -7,3 +7,19 @@ Zip files uploaded to said bucket must be prefixed with "mi_" for Management Inf
 `mi_opn2001a_01012020_1200.zip`
 
 Appropriate zip file metadata messages are published to a Pub/Sub topic for MiNiFi to consume and transfer the zip files on-premises via NiFi.
+
+## Testing
+
+To run formatting, linting and testing run:
+
+```sh
+poetry install
+make format lint test
+```
+
+If you just want to run the tests:
+
+```sh
+poetry install
+make test
+```
