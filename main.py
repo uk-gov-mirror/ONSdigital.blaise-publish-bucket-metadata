@@ -11,6 +11,7 @@ SUPPORTED_FILE_EXTENSIONS = [".zip"]
 
 SUPPORTED_FILE_TYPES = ["dd", "mi"]
 
+
 def md5hash_to_md5sum(md5hash):
     decode_hash = base64.b64decode(md5hash)
     encoded_hash = binascii.hexlify(decode_hash)
