@@ -1,6 +1,6 @@
 import json
 
-from message import File, Message
+from models.message import File, Message
 
 
 def test_message_json():

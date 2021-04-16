@@ -4,8 +4,8 @@ import binascii
 import blaise_dds
 from google.cloud import pubsub_v1
 
-from config import Config
-from message import File, Message
+from models.config import Config
+from models.message import File, Message
 
 
 def createMsg(event, config):
