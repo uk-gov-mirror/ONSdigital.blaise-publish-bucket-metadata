@@ -1,11 +1,12 @@
 import json
 import os
 from unittest import mock
+import pytest
 
 import blaise_dds
 from google.cloud.pubsub_v1 import PublisherClient
 
-from main import publishMsg, md5hash_to_md5sum
+from main import publishMsg, md5hash_to_md5sum, size_in_megabytes
 
 
 @mock.patch.dict(
@@ -32,8 +33,8 @@ def test_publishMsg_dd(mock_pubsub, mock_update_state, dd_event):
     )
     assert len(mock_pubsub.call_args_list) == 1
     assert (
-        mock_pubsub.call_args_list[0][0][0]
-        == "projects/test_project_id/topics/nifi-notify"
+            mock_pubsub.call_args_list[0][0][0]
+            == "projects/test_project_id/topics/nifi-notify"
     )
     pubsub_message = mock_pubsub.call_args_list[0][1]["data"]
     assert json.loads(pubsub_message) == {
@@ -84,8 +85,8 @@ def test_publishMsg_mi(mock_pubsub, mock_update_state, mi_event):
     )
 
     assert (
-        mock_pubsub.call_args_list[0][0][0]
-        == "projects/test_project_id/topics/nifi-notify"
+            mock_pubsub.call_args_list[0][0][0]
+            == "projects/test_project_id/topics/nifi-notify"
     )
     pubsub_message = mock_pubsub.call_args_list[0][1]["data"]
     assert json.loads(pubsub_message) == {
@@ -149,13 +150,26 @@ def test_project_id_not_set(mock_update_state, dd_event, capsys):
     )
     captured = capsys.readouterr()
     assert captured.out == (
-        "Configuration: Project ID: None\n"
-        + "Configuration: Topic Name: nifi-notify\n"
-        + "Configuration: File name: dd_OPN2102R_0103202021_16428.zip\n"
-        + "Configuration: Bucket Name: ons-blaise-v2-nifi\n"
-        + "Configuration: ON-PREM-SUBFOLDER: None\n"
-        + "project_id not set, publish failed\n"
+            "Configuration: Project ID: None\n"
+            + "Configuration: Topic Name: nifi-notify\n"
+            + "Configuration: File name: dd_OPN2102R_0103202021_16428.zip\n"
+            + "Configuration: Bucket Name: ons-blaise-v2-nifi\n"
+            + "Configuration: ON-PREM-SUBFOLDER: None\n"
+            + "project_id not set, publish failed\n"
     )
+
 
 def test_md5hash_to_md5sum(md5hash):
     assert md5hash_to_md5sum(md5hash) == "d1ad7875be9ee3c6fde3b6f9efdf3c6b67fad78ebd7f6dbc"
+
+
+@pytest.mark.parametrize("size_in_bytes,size_in_megs",
+                         [
+                             ("20", "0.000020"),
+                             ("320", "0.000320"),
+                             ("4783", "0.004783"),
+                             ("12004783", "12.004783"),
+                             ("3475231", "3.475231"),
+                         ])
+def test_size_in_megabytes(size_in_bytes, size_in_megs):
+    assert size_in_megabytes(size_in_bytes) == size_in_megs
