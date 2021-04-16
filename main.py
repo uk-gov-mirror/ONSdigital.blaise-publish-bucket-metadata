@@ -27,7 +27,7 @@ def create_message(event, config):
         name=f"{event['name']}:{event['bucket']}",
         sizeBytes=event["size"],
         md5sum=md5hash_to_md5sum(event["md5Hash"]),
-        relativePath=".\\",
+        relativePath=".\\"
     )
 
     msg = Message(
@@ -36,7 +36,7 @@ def create_message(event, config):
         dataset="",
         manifestCreated=event["timeCreated"],
         fullSizeMegabytes=size_in_megabytes(event["size"]),
-        files=[file],
+        files=[file]
     )
 
     if file.extension() not in SUPPORTED_FILE_EXTENSIONS:
