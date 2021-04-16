@@ -7,6 +7,9 @@ from google.cloud import pubsub_v1
 from models.config import Config
 from models.message import File, Message
 
+SUPPORTED_FILE_EXTENSIONS = [".zip"]
+
+SUPPORTED_FILE_TYPES = ["dd", "mi"]
 
 def md5hash_to_md5sum(md5hash):
     decode_hash = base64.b64decode(md5hash)
@@ -35,29 +38,20 @@ def create_message(event, config):
         files=[file],
     )
 
-    if file.extension() == ".zip" and file.type() == "mi":
-        msg.description = (
-            "Management Information files uploaded to GCP bucket from Blaise5"
-        )
-        msg.dataset = "blaise_mi"
-        msg.iterationL1 = config.on_prem_subfolder
-    elif file.extension() == ".zip" and file.type() == "dd":
-        msg.description = "Data Delivery files uploaded to GCP bucket from Blaise5"
-        msg.dataset = "blaise_dde"
-        msg.iterationL1 = "SYSTEMS"
-        msg.iterationL2 = config.on_prem_subfolder
-        msg.iterationL3 = event["name"][3:6].upper()
-        msg.iterationL4 = event["name"][3:11].upper()
-    else:
-        print(
-            "File extension {} not found or file type {} is invalid".format(
-                file.extension(), file.type()
-            )
-        )
+    if file.extension() not in SUPPORTED_FILE_EXTENSIONS:
+        print(f"File extension '{file.extension()}' is invalid, supported extensions: {SUPPORTED_FILE_EXTENSIONS}")
         return None
 
-    print(f"Message created {msg}")
-    return msg
+    if file.type() not in SUPPORTED_FILE_TYPES:
+        print(f"File type '{file.type()}' is invalid, supported extensions: {SUPPORTED_FILE_TYPES}")
+        return None
+
+    if file.type() == "mi":
+        return msg.management_information(config)
+    if file.type() == "dd":
+        return msg.data_delivery_opn(config, event)
+
+    return None
 
 
 def publishMsg(event, _context):
