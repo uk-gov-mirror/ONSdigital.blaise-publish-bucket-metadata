@@ -20,13 +20,17 @@ Create a virtual environment:
 
 On MacOS
 ```
-{drive}:\{workspace}> python3 -m venv venv  
-{drive}:\{workspace}> source venv/bin/activate (this will run a .bat file)
+python3 -m venv venv  
+source venv/bin/activate (this will run a .bat file)
 ```
 On Windows
 ```
-{drive}:\{workspace}> python -m venv venv  
-{drive}:\{workspace}> venv\Scripts\activate (this will run a .bat file)
+python -m venv venv  
+```
+
+(this will then run a .bat file)
+```
+venv\Scripts\activate 
 ```
 
 Install poetry:
