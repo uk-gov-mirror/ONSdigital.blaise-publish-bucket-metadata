@@ -30,33 +30,34 @@ def test_publishMsg_dd(mock_pubsub, mock_update_state, dd_event):
         dd_event["name"],
         "nifi_notified",
     )
-    mock_pubsub.assert_called_once_with(
-        "projects/test_project_id/topics/nifi-notify",
-        data=json.dumps(
-            {
-                "version": 3,
-                "schemaVersion": 1,
-                "files": [
-                    {
-                        "sizeBytes": "20",
-                        "name": "dd_OPN2102R_0103202021_16428.zip:ons-blaise-v2-nifi",
-                        "md5sum": "d1ad7875be9ee3c6fde3b6f9efdf3c6b67fad78ebd7f6dbc",
-                        "relativePath": ".\\",
-                    }
-                ],
-                "sensitivity": "High",
-                "sourceName": "gcp_blaise_test",
-                "description": "Data Delivery files uploaded to GCP bucket from Blaise5",
-                "dataset": "blaise_dde",
-                "iterationL1": "SYSTEMS",
-                "iterationL2": "DEV",
-                "iterationL3": "OPN",
-                "iterationL4": "OPN2102R",
-                "manifestCreated": "0103202021_16428",
-                "fullSizeMegabytes": "0.000020",
-            }
-        ).encode("utf-8"),
+    assert len(mock_pubsub.call_args_list) == 1
+    assert (
+        mock_pubsub.call_args_list[0][0][0]
+        == "projects/test_project_id/topics/nifi-notify"
     )
+    pubsub_message = mock_pubsub.call_args_list[0][1]["data"]
+    assert json.loads(pubsub_message) == {
+        "version": 3,
+        "schemaVersion": 1,
+        "files": [
+            {
+                "sizeBytes": "20",
+                "name": "dd_OPN2102R_0103202021_16428.zip:ons-blaise-v2-nifi",
+                "md5sum": "d1ad7875be9ee3c6fde3b6f9efdf3c6b67fad78ebd7f6dbc",
+                "relativePath": ".\\",
+            }
+        ],
+        "sensitivity": "High",
+        "sourceName": "gcp_blaise_test",
+        "description": "Data Delivery files uploaded to GCP bucket from Blaise5",
+        "dataset": "blaise_dde",
+        "iterationL1": "SYSTEMS",
+        "iterationL2": "DEV",
+        "iterationL3": "OPN",
+        "iterationL4": "OPN2102R",
+        "manifestCreated": "0103202021_16428",
+        "fullSizeMegabytes": "0.000020",
+    }
 
 
 @mock.patch.dict(
@@ -81,33 +82,34 @@ def test_publishMsg_mi(mock_pubsub, mock_update_state, mi_event):
         mi_event["name"],
         "nifi_notified",
     )
-    mock_pubsub.assert_called_once_with(
-        "projects/test_project_id/topics/nifi-notify",
-        data=json.dumps(
-            {
-                "version": 3,
-                "schemaVersion": 1,
-                "files": [
-                    {
-                        "sizeBytes": "20",
-                        "name": "mi_foobar.zip:ons-blaise-v2-nifi",
-                        "md5sum": "d1ad7875be9ee3c6fde3b6f9efdf3c6b67fad78ebd7f6dbc",
-                        "relativePath": ".\\",
-                    }
-                ],
-                "sensitivity": "High",
-                "sourceName": "gcp_blaise_test",
-                "description": "Management Information files uploaded to GCP bucket from Blaise5",
-                "dataset": "blaise_mi",
-                "iterationL1": "DEV",
-                "iterationL2": "",
-                "iterationL3": "",
-                "iterationL4": "",
-                "manifestCreated": "0103202021_16428",
-                "fullSizeMegabytes": "0.000020",
-            }
-        ).encode("utf-8"),
+
+    assert (
+        mock_pubsub.call_args_list[0][0][0]
+        == "projects/test_project_id/topics/nifi-notify"
     )
+    pubsub_message = mock_pubsub.call_args_list[0][1]["data"]
+    assert json.loads(pubsub_message) == {
+        "version": 3,
+        "schemaVersion": 1,
+        "files": [
+            {
+                "sizeBytes": "20",
+                "name": "mi_foobar.zip:ons-blaise-v2-nifi",
+                "md5sum": "d1ad7875be9ee3c6fde3b6f9efdf3c6b67fad78ebd7f6dbc",
+                "relativePath": ".\\",
+            }
+        ],
+        "sensitivity": "High",
+        "sourceName": "gcp_blaise_test",
+        "description": "Management Information files uploaded to GCP bucket from Blaise5",
+        "dataset": "blaise_mi",
+        "iterationL1": "DEV",
+        "iterationL2": "",
+        "iterationL3": "",
+        "iterationL4": "",
+        "manifestCreated": "0103202021_16428",
+        "fullSizeMegabytes": "0.000020",
+    }
 
 
 @mock.patch.dict(

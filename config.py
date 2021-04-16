@@ -1,9 +1,9 @@
-from dataclasses import dataclass
 import os
+from dataclasses import dataclass
 
 
 @dataclass
-class Config(object):
+class Config:
     on_prem_subfolder: str
     project_id: str
     topic_name: str
@@ -12,8 +12,8 @@ class Config(object):
     @classmethod
     def from_env(cls):
         return cls(
-            on_prem_subfolder=os.getenv('ON-PREM-SUBFOLDER'),
+            on_prem_subfolder=os.getenv("ON-PREM-SUBFOLDER"),
             project_id=os.getenv("PROJECT_ID"),
             topic_name=os.getenv("TOPIC_NAME"),
-            env=os.getenv("ENV")
+            env=os.getenv("ENV"),
         )

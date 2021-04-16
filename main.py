@@ -1,37 +1,18 @@
 import base64
 import binascii
-import json
-import os
 
 import blaise_dds
 from google.cloud import pubsub_v1
 
+from config import Config
+from message import File, Message
 
-def createMsg(event):
-    msg = {
-        "version": 3,
-        "schemaVersion": 1,
-        "files": [],
-        "sensitivity": "High",
-        "sourceName": "gcp_blaise_" + os.environ["ENV"],
-        "description": "",
-        "dataset": "",
-        "iterationL1": "",
-        "iterationL2": "",
-        "iterationL3": "",
-        "iterationL4": "",
-        "manifestCreated": "",
-        "fullSizeMegabytes": "",
-    }
 
-    files = {}
-    filename = event["name"] + ":" + event["bucket"]
-    files["sizeBytes"] = event["size"]
-    files["name"] = filename
-    decodehash = base64.b64decode(event["md5Hash"])
-    encodehash = binascii.hexlify(decodehash)
-    files["md5sum"] = str(
-        encodehash, "utf-8"
+def createMsg(event, config):
+    decode_hash = base64.b64decode(event["md5Hash"])
+    encode_hash = binascii.hexlify(decode_hash)
+    md5sum = str(
+        encode_hash, "utf-8"
     )  # Note GCP uses md5hash - however, MiNiFi needs it to be md5sum
 
     file = File(
@@ -60,12 +41,12 @@ def createMsg(event):
         msg.dataset = "blaise_mi"
         msg.iterationL1 = config.on_prem_subfolder
     elif fileExtn == "zip" and fileType == "dd":
-        msg["description"] = "Data Delivery files uploaded to GCP bucket from Blaise5"
-        msg["dataset"] = "blaise_dde"
-        msg["iterationL1"] = "SYSTEMS"
-        msg["iterationL2"] = os.getenv("ON-PREM-SUBFOLDER")
-        msg["iterationL3"] = event["name"][3:6].upper()
-        msg["iterationL4"] = event["name"][3:11].upper()
+        msg.description = "Data Delivery files uploaded to GCP bucket from Blaise5"
+        msg.dataset = "blaise_dde"
+        msg.iterationL1 = "SYSTEMS"
+        msg.iterationL2 = config.on_prem_subfolder
+        msg.iterationL3 = event["name"][3:6].upper()
+        msg.iterationL4 = event["name"][3:11].upper()
     else:
         print(
             "File extension {} not found or file type {} is invalid".format(
@@ -74,37 +55,32 @@ def createMsg(event):
         )
         return None
 
-    msg["manifestCreated"] = event["timeCreated"]
-    msg["fullSizeMegabytes"] = "{:.6f}".format(int(event["size"]) / 1000000)
     print(f"Message created {msg}")
     return msg
 
 
-def publishMsg(event, context):
-    project_id = os.getenv("PROJECT_ID", None)
-    topic_name = os.getenv("TOPIC_NAME", None)
+def publishMsg(event, _context):
+    config = Config.from_env()
     dds_client = blaise_dds.Client(blaise_dds.Config.from_env())
     try:
         dds_client.update_state(event["name"], "in_nifi_bucket")
 
-        print(f"Configuration: Project ID: {project_id}")
-        print(f"Configuration: Topic Name: {topic_name}")
+        print(f"Configuration: Project ID: {config.project_id}")
+        print(f"Configuration: Topic Name: {config.topic_name}")
         print(f"Configuration: File name: {event['name']}")
         print(f"Configuration: Bucket Name: {event['bucket']}")
-        print(
-            f"Configuration: ON-PREM-SUBFOLDER: {os.getenv('ON-PREM-SUBFOLDER', None)}"
-        )
+        print(f"Configuration: ON-PREM-SUBFOLDER: {config.on_prem_subfolder}")
 
-        if project_id is None:
+        if config.project_id is None:
             print("project_id not set, publish failed")
             return
 
-        msg = createMsg(event)
+        msg = createMsg(event, config)
         print(f"Message {msg}")
         if msg is not None:
             client = pubsub_v1.PublisherClient()
-            topic_path = client.topic_path(project_id, topic_name)
-            msg_bytes = bytes(json.dumps(msg), encoding="utf-8")
+            topic_path = client.topic_path(config.project_id, config.topic_name)
+            msg_bytes = bytes(msg.json(), encoding="utf-8")
             client.publish(topic_path, data=msg_bytes)
             print(f"Message published")
             dds_client.update_state(event["name"], "nifi_notified")
