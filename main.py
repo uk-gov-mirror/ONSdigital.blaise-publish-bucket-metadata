@@ -3,6 +3,7 @@ from google.cloud import pubsub_v1
 
 from models.config import Config
 from models.message import File, Message
+from utils import InvalidFileExtension, InvalidFileType
 
 SUPPORTED_FILE_EXTENSIONS = [".zip"]
 
@@ -29,23 +30,26 @@ def create_message(event, config):
     )
 
     if file.extension() not in SUPPORTED_FILE_EXTENSIONS:
-        print(
+        raise InvalidFileExtension(
             f"File extension '{file.extension()}' is invalid, supported extensions: {SUPPORTED_FILE_EXTENSIONS}"  # noqa:E501
         )
-        return None
-
-    if file.type() not in SUPPORTED_FILE_TYPES:
-        print(
-            f"File type '{file.type()}' is invalid, supported extensions: {SUPPORTED_FILE_TYPES}"  # noqa:E501
-        )
-        return None
 
     if file.type() == "mi":
         return msg.management_information(config)
     if file.type() == "dd":
         return msg.data_delivery_opn(config, event)
 
-    return None
+    raise InvalidFileType(
+        f"File type '{file.type()}' is invalid, supported extensions: {SUPPORTED_FILE_TYPES}"  # noqa:E501
+    )
+
+
+def send_pub_sub_message(config, message):
+    client = pubsub_v1.PublisherClient()
+    topic_path = client.topic_path(config.project_id, config.topic_name)
+    msg_bytes = bytes(message.json(), encoding="utf-8")
+    client.publish(topic_path, data=msg_bytes)
+    print("Message published")
 
 
 def publishMsg(event, _context):
@@ -53,22 +57,18 @@ def publishMsg(event, _context):
     config.log()
     log_event(event)
     dds_client = blaise_dds.Client(blaise_dds.Config.from_env())
+    dds_client.update_state(event["name"], "in_nifi_bucket")
+    if config.project_id is None:
+        print("project_id not set, publish failed")
+        return
+
     try:
-        dds_client.update_state(event["name"], "in_nifi_bucket")
+        message = create_message(event, config)
+        print(f"Message {message}")
 
-        if config.project_id is None:
-            print("project_id not set, publish failed")
-            return
-
-        msg = create_message(event, config)
-        print(f"Message {msg}")
-        if msg is not None:
-            client = pubsub_v1.PublisherClient()
-            topic_path = client.topic_path(config.project_id, config.topic_name)
-            msg_bytes = bytes(msg.json(), encoding="utf-8")
-            client.publish(topic_path, data=msg_bytes)
-            print("Message published")
-            dds_client.update_state(event["name"], "nifi_notified")
+        send_pub_sub_message(config, message)
+        dds_client.update_state(event["name"], "nifi_notified")
 
     except Exception as error:
+        print(repr(error))
         dds_client.update_state(event["name"], "errored", repr(error))
