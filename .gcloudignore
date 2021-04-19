@@ -1,0 +1,11 @@
+venv
+__pycache__
+.coverage
+.pytest_cache
+.vscode
+poetry.lock
+pyproject.toml
+README.md
+tests
+.git
+.gitignore
