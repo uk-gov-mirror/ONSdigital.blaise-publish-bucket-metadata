@@ -1,4 +1,5 @@
 import json
+
 import pytest
 
 from models.message import File, Message
@@ -45,14 +46,19 @@ def test_file_extension(file):
 def test_file_filename(file):
     assert file.filename() == "dd_file.zip"
 
-@pytest.mark.parametrize("file_name,file_type", [("dd_file.zip", "dd"),("mi_file.zip", "mi")])
+
+@pytest.mark.parametrize(
+    "file_name,file_type", [("dd_file.zip", "dd"), ("mi_file.zip", "mi")]
+)
 def test_file_file_type(file, file_name, file_type):
     file.name = f"{file_name}:my-bucket-name"
     assert file.type() == file_type
 
+
 def test_file_survey_name(file):
     file.name = "dd_opn2101a.zip:my-bucket-name"
     assert file.survey_name() == "OPN"
+
 
 def test_file_insrument_name(file):
     file.name = "dd_opn2101a.zip:my-bucket-name"
