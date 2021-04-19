@@ -50,7 +50,7 @@ def test_publishMsg_dd(mock_pubsub, mock_update_state, dd_event):
         ],
         "sensitivity": "High",
         "sourceName": "gcp_blaise_test",
-        "description": "Data Delivery files uploaded to GCP bucket from Blaise5",
+        "description": "Data Delivery files for OPN uploaded to GCP bucket from Blaise5",
         "dataset": "blaise_dde",
         "iterationL1": "SYSTEMS",
         "iterationL2": "DEV",

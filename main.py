@@ -36,8 +36,10 @@ def create_message(event, config):
 
     if file.type() == "mi":
         return msg.management_information(config)
-    if file.type() == "dd":
-        return msg.data_delivery_opn(config, event)
+    if file.type() == "dd" and file.survey_name() == "OPN":
+        return msg.data_delivery_opn(config)
+    if file.type() == "dd" and file.survey_name() == "LMS":
+        return msg.data_delivery_lms()
 
     raise InvalidFileType(
         f"File type '{file.type()}' is invalid, supported extensions: {SUPPORTED_FILE_TYPES}"  # noqa:E501

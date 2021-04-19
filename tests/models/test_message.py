@@ -48,21 +48,38 @@ def test_file_filename(file):
 
 
 @pytest.mark.parametrize(
-    "file_name,file_type", [("dd_file.zip", "dd"), ("mi_file.zip", "mi")]
+    "file_name,file_type",
+    [("dd_file.zip", "dd"), ("mi_file.zip", "mi")],
 )
 def test_file_file_type(file, file_name, file_type):
     file.name = f"{file_name}:my-bucket-name"
     assert file.type() == file_type
 
 
-def test_file_survey_name(file):
-    file.name = "dd_opn2101a.zip:my-bucket-name"
-    assert file.survey_name() == "OPN"
+@pytest.mark.parametrize(
+    "file_name, expected",
+    [
+        ("dd_opn2101a.zip", "OPN"),
+        ("dd_lms2102_a1.zip", "LMS"),
+        ("dd_lms2102_bk1.zip", "LMS"),
+    ],
+)
+def test_file_survey_name(file, file_name, expected):
+    file.name = f"{file_name}:my-bucket-name"
+    assert file.survey_name() == expected
 
 
-def test_file_insrument_name(file):
-    file.name = "dd_opn2101a.zip:my-bucket-name"
-    assert file.instrument_name() == "OPN2101A"
+@pytest.mark.parametrize(
+    "file_name, expected",
+    [
+        ("dd_opn2101a.zip", "OPN2101A"),
+        ("dd_lms2102_a1.zip", "LMS2102_A1"),
+        ("dd_lms2102_bk1.zip", "LMS2102_BK1"),
+    ],
+)
+def test_file_instrument_name(file, file_name, expected):
+    file.name = f"{file_name}:my-bucket-name"
+    assert file.instrument_name() == expected
 
 
 def test_file_from_event(dd_event):
