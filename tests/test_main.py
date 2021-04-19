@@ -152,9 +152,10 @@ def test_project_id_not_set(mock_update_state, dd_event, capsys):
     assert captured.out == (
         "Configuration: Project ID: None\n"
         + "Configuration: Topic Name: nifi-notify\n"
+        + "Configuration: ON-PREM-SUBFOLDER: None\n"
+        + "Configuration: Env: None\n"
         + "Configuration: File name: dd_OPN2102R_0103202021_16428.zip\n"
         + "Configuration: Bucket Name: ons-blaise-v2-nifi\n"
-        + "Configuration: ON-PREM-SUBFOLDER: None\n"
         + "project_id not set, publish failed\n"
     )
 
