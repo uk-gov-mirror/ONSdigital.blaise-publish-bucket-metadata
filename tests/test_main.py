@@ -132,7 +132,7 @@ def test_publishMsg_error(mock_pubsub, mock_update_state, dd_event):
     assert mock_update_state.call_args_list[1] == mock.call(
         dd_event["name"],
         "errored",
-        "Exception('Explosions occured when sending message to pubsub')",
+        "Exception('Explosions occurred when sending message to pubsub')",
     )
 
 
