@@ -121,7 +121,7 @@ def test_publishMsg_mi(mock_pubsub, mock_update_state, mi_event):
 @mock.patch.object(PublisherClient, "publish")
 def test_publishMsg_error(mock_pubsub, mock_update_state, dd_event):
     mock_pubsub.side_effect = Exception(
-        "Explosions occured when sending message to pubsub"
+        "Explosions occurred when sending message to pubsub"
     )
     publishMsg(dd_event, None)
     assert mock_update_state.call_count == 2
