@@ -3,13 +3,15 @@ import pathlib
 from dataclasses import asdict, dataclass
 from typing import List
 
+from utils import md5hash_to_md5sum
+
 
 @dataclass
 class File:
     name: str
     sizeBytes: str
     md5sum: str
-    relativePath: str
+    relativePath: str = ".\\"
 
     def extension(self):
         return pathlib.Path(self.filename()).suffix
@@ -27,17 +29,25 @@ class File:
         file_prefix = pathlib.Path(self.filename()).stem
         return file_prefix.split("_")[1].upper()
 
+    @classmethod
+    def from_event(cls, event):
+        return cls(
+            name=f"{event['name']}:{event['bucket']}",
+            sizeBytes=event["size"],
+            md5sum=md5hash_to_md5sum(event["md5Hash"]),
+        )
+
 
 @dataclass
 class Message:
     files: List[File]
     sourceName: str
-    description: str
-    dataset: str
     manifestCreated: str
     fullSizeMegabytes: str
     version: int = 3
     schemaVersion: int = 1
+    description: str = ""
+    dataset: str = ""
     sensitivity: str = "High"
     iterationL1: str = ""
     iterationL2: str = ""

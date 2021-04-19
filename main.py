@@ -1,6 +1,3 @@
-import base64
-import binascii
-
 import blaise_dds
 from google.cloud import pubsub_v1
 
@@ -12,39 +9,30 @@ SUPPORTED_FILE_EXTENSIONS = [".zip"]
 SUPPORTED_FILE_TYPES = ["dd", "mi"]
 
 
-def md5hash_to_md5sum(md5hash):
-    decode_hash = base64.b64decode(md5hash)
-    encoded_hash = binascii.hexlify(decode_hash)
-    return str(encoded_hash, "utf-8")
-
-
 def size_in_megabytes(size_in_bytes):
     return "{:.6f}".format(int(size_in_bytes) / 1000000)
 
 
 def create_message(event, config):
-    file = File(
-        name=f"{event['name']}:{event['bucket']}",
-        sizeBytes=event["size"],
-        md5sum=md5hash_to_md5sum(event["md5Hash"]),
-        relativePath=".\\"
-    )
+    file = File.from_event(event)
 
     msg = Message(
         sourceName=f"gcp_blaise_{config.env}",
-        description="",
-        dataset="",
         manifestCreated=event["timeCreated"],
         fullSizeMegabytes=size_in_megabytes(event["size"]),
-        files=[file]
+        files=[file],
     )
 
     if file.extension() not in SUPPORTED_FILE_EXTENSIONS:
-        print(f"File extension '{file.extension()}' is invalid, supported extensions: {SUPPORTED_FILE_EXTENSIONS}")
+        print(
+            f"File extension '{file.extension()}' is invalid, supported extensions: {SUPPORTED_FILE_EXTENSIONS}"
+        )
         return None
 
     if file.type() not in SUPPORTED_FILE_TYPES:
-        print(f"File type '{file.type()}' is invalid, supported extensions: {SUPPORTED_FILE_TYPES}")
+        print(
+            f"File type '{file.type()}' is invalid, supported extensions: {SUPPORTED_FILE_TYPES}"
+        )
         return None
 
     if file.type() == "mi":
