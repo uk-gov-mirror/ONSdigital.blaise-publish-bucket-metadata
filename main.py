@@ -38,7 +38,7 @@ def create_message(event, config):
         return msg.management_information(config)
     if file.type() == "dd" and file.survey_name() == "OPN":
         return msg.data_delivery_opn(config)
-    if file.type() == "dd" and file.type():
+    if file.type() == "dd" and file.is_lms():
         return msg.data_delivery_lms(config)
 
     raise InvalidFileType(
@@ -54,12 +54,25 @@ def send_pub_sub_message(config, message):
     print("Message published")
 
 
+def update_dds(event, state, error=None):
+    try:
+        dds_client = blaise_dds.Client(blaise_dds.Config.from_env())
+    except Exception as err:
+        print(f"failed to establish dds client: {err}")
+        return
+
+    if error:
+        dds_client.update_state(event["name"], state, error)
+        return
+    dds_client.update_state(event["name"], state)
+
+
 def publishMsg(event, _context):
     config = Config.from_env()
     config.log()
     log_event(event)
-    dds_client = blaise_dds.Client(blaise_dds.Config.from_env())
-    dds_client.update_state(event["name"], "in_nifi_bucket")
+    update_dds(event, "in_nifi_bucket")
+
     if config.project_id is None:
         print("project_id not set, publish failed")
         return
@@ -69,8 +82,8 @@ def publishMsg(event, _context):
         print(f"Message {message}")
 
         send_pub_sub_message(config, message)
-        dds_client.update_state(event["name"], "nifi_notified")
+        update_dds(event, "nifi_notified")
 
     except Exception as error:
         print(repr(error))
-        dds_client.update_state(event["name"], "errored", repr(error))
+        update_dds(event, "errored", repr(error))
