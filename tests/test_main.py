@@ -6,7 +6,7 @@ import blaise_dds
 import pytest
 from google.cloud.pubsub_v1 import PublisherClient
 
-from main import publishMsg, size_in_megabytes
+from main import publishMsg, size_in_megabytes, update_dds
 
 
 @mock.patch.dict(
@@ -182,3 +182,44 @@ def test_project_id_not_set(mock_update_state, dd_event, capsys, instrument):
 )
 def test_size_in_megabytes(size_in_bytes, size_in_megs):
     assert size_in_megabytes(size_in_bytes) == size_in_megs
+
+
+@mock.patch.object(blaise_dds.Client, "update_state")
+@pytest.mark.parametrize(
+    "instrument,state",
+    [
+        ("LMC2102R", "in_nifi_bucket"),
+        ("OPN2102R", "nifi_notified"),
+        ("LMS2102R", "in_arc"),
+    ],
+)
+def test_update_dds(mock_update_state, dd_event, instrument, state):
+    dd_event = dd_event(instrument)
+    update_dds(dd_event, state)
+    assert mock_update_state.call_count == 1
+    assert mock_update_state.call_args_list[0] == mock.call(
+        dd_event["name"],
+        state,
+    )
+
+
+# @mock.patch.object(blaise_dds.Client, "update_state")
+# @pytest.mark.parametrize(
+#     "instrument,state",
+#     [
+#         ("LMC2102R", "in_nifi_bucket"),
+#         ("OPN2102R", "nifi_notified"),
+#         ("LMS2102R", "in_arc"),
+#     ],
+# )
+# def test_update_dds_fail(mock_update_state, dd_event, capsys, instrument, state):
+#     mock_update_state.side_effect = Exception(
+#         "Computer says no. Do not pass Go. Do not collect £200"
+#     )
+#     dd_event = dd_event(instrument)
+#     update_dds(dd_event, state)
+#     captured = capsys.readouterr()
+#     assert (
+#         captured.out
+#         == "failed to establish dds client: Computer says no. Do not pass Go. Do not collect £200"
+#     )
