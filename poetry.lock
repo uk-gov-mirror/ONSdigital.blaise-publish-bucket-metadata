@@ -542,6 +542,17 @@ python-versions = ">=3.5"
 pytest = ">=2.7.1"
 
 [[package]]
+name = "pytest-lazy-fixture"
+version = "0.6.3"
+description = "It helps to use fixtures in pytest.mark.parametrize"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+pytest = ">=3.2.5"
+
+[[package]]
 name = "pytz"
 version = "2021.1"
 description = "World timezone definitions, modern and historical"
@@ -666,7 +677,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "31b55d02ef93819e5f1e3ab3517f3ca4f38de56661c7afc435f9ff1873506c41"
+content-hash = "34f9e38dd67ecb2cf30e29ec010c37a3869c4b1f1a5be94724b6ed18db68f7ee"
 
 [metadata.files]
 appdirs = [
@@ -994,6 +1005,10 @@ pytest = [
 pytest-flakefinder = [
     {file = "pytest-flakefinder-1.0.0.tar.gz", hash = "sha256:1bdfaeaad4699cfb3b295e24c359e403e6261eabca9ba9bdffbaba8cabe87d63"},
     {file = "pytest_flakefinder-1.0.0-py2.py3-none-any.whl", hash = "sha256:1d7761402e6e90d8c0a34b33b19799f8ce1c396623025528dccc1329a53d4e66"},
+]
+pytest-lazy-fixture = [
+    {file = "pytest-lazy-fixture-0.6.3.tar.gz", hash = "sha256:0e7d0c7f74ba33e6e80905e9bfd81f9d15ef9a790de97993e34213deb5ad10ac"},
+    {file = "pytest_lazy_fixture-0.6.3-py3-none-any.whl", hash = "sha256:e0b379f38299ff27a653f03eaa69b08a6fd4484e46fd1c9907d984b9f9daeda6"},
 ]
 pytz = [
     {file = "pytz-2021.1-py2.py3-none-any.whl", hash = "sha256:eb10ce3e7736052ed3623d49975ce333bcd712c7bb19a58b9e2089d4057d0798"},

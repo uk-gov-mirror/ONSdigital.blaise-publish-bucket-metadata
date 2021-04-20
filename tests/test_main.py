@@ -20,7 +20,19 @@ from main import publishMsg, size_in_megabytes
 )
 @mock.patch.object(blaise_dds.Client, "update_state")
 @mock.patch.object(PublisherClient, "publish")
-def test_publishMsg_dd(mock_pubsub, mock_update_state, dd_event):
+@pytest.mark.parametrize(
+    "instrument, expected_message",
+    [
+        ("LMC2102R", pytest.lazy_fixture("expected_pubsub_message_lmc")),
+        ("OPN2102R", pytest.lazy_fixture("expected_pubsub_message_opn")),
+        ("LMS2102R", pytest.lazy_fixture("expected_pubsub_message_lms")),
+    ],
+)
+def test_publishMsg_dd(
+    mock_pubsub, mock_update_state, dd_event, instrument, expected_message
+):
+    dd_event = dd_event(instrument)
+
     publishMsg(dd_event, None)
     assert mock_update_state.call_count == 2
     assert mock_update_state.call_args_list[0] == mock.call(
@@ -37,28 +49,7 @@ def test_publishMsg_dd(mock_pubsub, mock_update_state, dd_event):
         == "projects/test_project_id/topics/nifi-notify"
     )
     pubsub_message = mock_pubsub.call_args_list[0][1]["data"]
-    assert json.loads(pubsub_message) == {
-        "version": 3,
-        "schemaVersion": 1,
-        "files": [
-            {
-                "sizeBytes": "20",
-                "name": "dd_OPN2102R_0103202021_16428.zip:ons-blaise-v2-nifi",
-                "md5sum": "d1ad7875be9ee3c6fde3b6f9efdf3c6b67fad78ebd7f6dbc",
-                "relativePath": ".\\",
-            }
-        ],
-        "sensitivity": "High",
-        "sourceName": "gcp_blaise_test",
-        "description": "Data Delivery files for OPN uploaded to GCP bucket from Blaise5",
-        "dataset": "blaise_dde",
-        "iterationL1": "SYSTEMS",
-        "iterationL2": "DEV",
-        "iterationL3": "OPN",
-        "iterationL4": "OPN2102R",
-        "manifestCreated": "0103202021_16428",
-        "fullSizeMegabytes": "0.000020",
-    }
+    assert json.loads(pubsub_message) == expected_message
 
 
 @mock.patch.dict(
@@ -119,10 +110,19 @@ def test_publishMsg_mi(mock_pubsub, mock_update_state, mi_event):
 )
 @mock.patch.object(blaise_dds.Client, "update_state")
 @mock.patch.object(PublisherClient, "publish")
-def test_publishMsg_error(mock_pubsub, mock_update_state, dd_event):
+@pytest.mark.parametrize(
+    "instrument",
+    [
+        ("LMC2102R"),
+        ("OPN2102R"),
+        ("LMS2102R"),
+    ],
+)
+def test_publishMsg_error(mock_pubsub, mock_update_state, dd_event, instrument):
     mock_pubsub.side_effect = Exception(
         "Explosions occurred when sending message to pubsub"
     )
+    dd_event = dd_event(instrument)
     publishMsg(dd_event, None)
     assert mock_update_state.call_count == 2
     assert mock_update_state.call_args_list[0] == mock.call(
@@ -141,7 +141,17 @@ def test_publishMsg_error(mock_pubsub, mock_update_state, dd_event):
     {"TOPIC_NAME": "nifi-notify"},
 )
 @mock.patch.object(blaise_dds.Client, "update_state")
-def test_project_id_not_set(mock_update_state, dd_event, capsys):
+@pytest.mark.parametrize(
+    "instrument",
+    [
+        ("LMC2102R"),
+        ("OPN2102R"),
+        ("LMS2102R"),
+    ],
+)
+def test_project_id_not_set(mock_update_state, dd_event, capsys, instrument):
+    dd_event = dd_event(instrument)
+
     publishMsg(dd_event, None)
     assert mock_update_state.call_count == 1
     assert mock_update_state.call_args_list[0] == mock.call(
@@ -154,7 +164,7 @@ def test_project_id_not_set(mock_update_state, dd_event, capsys):
         + "Configuration: Topic Name: nifi-notify\n"
         + "Configuration: ON-PREM-SUBFOLDER: None\n"
         + "Configuration: Env: None\n"
-        + "Configuration: File name: dd_OPN2102R_0103202021_16428.zip\n"
+        + f"Configuration: File name: dd_{instrument}_0103202021_16428.zip\n"
         + "Configuration: Bucket Name: ons-blaise-v2-nifi\n"
         + "project_id not set, publish failed\n"
     )

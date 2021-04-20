@@ -26,23 +26,17 @@ class File:
         return self.filename().split("_")[1][0:3].upper()
 
     def instrument_name(self):
-        # self.filename = "dd_lms2102r_bk1_0103202021_16428.zip"
-
         file_prefix = pathlib.Path(self.filename()).stem
-        # file_prefix = dd_lms2201a_bk1_0103202021_16428
-
         parsed_prefix = file_prefix.split("_")[1:]
-        # parsed_prefix = ["lms2201a", "bk1", "0103202021", "16428"]
-
         instrument_name = [
             instrument_name_part
             for instrument_name_part in parsed_prefix
             if not instrument_name_part.isnumeric()
         ]
-        # instrument_name_part = ["lms2201a", "bk1"]
-
         return "_".join(instrument_name).upper()
-        # return LMS2201A_BK1
+
+    def is_lms(self):
+        return self.survey_name().startswith("LM")
 
     @classmethod
     def from_event(cls, event):
@@ -96,15 +90,16 @@ class Message:
         self.iterationL4 = file.instrument_name()
         return self
 
-    def data_delivery_lms(self):
+    def data_delivery_lms(self, config):
         file = self.first_file()
         survey_name = file.survey_name()
+        environment = config.env
         self.description = (
             f"Data Delivery files for {survey_name} uploaded to GCP bucket from Blaise5"
         )
         self.dataset = "blaise_dde"
         self.iterationL1 = "LMS_Master"
         self.iterationL2 = "CLOUD"
-        self.iterationL3 = survey_name
+        self.iterationL3 = environment
         self.iterationL4 = file.instrument_name()
         return self

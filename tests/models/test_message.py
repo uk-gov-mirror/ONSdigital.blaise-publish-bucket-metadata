@@ -62,6 +62,8 @@ def test_file_file_type(file, file_name, file_type):
         ("dd_opn2101a.zip", "OPN"),
         ("dd_lms2102_a1.zip", "LMS"),
         ("dd_lms2102_bk1.zip", "LMS"),
+        ("dd_lmc2102_bk1.zip", "LMC"),
+        ("dd_lmb21021_bk2.zip", "LMB"),
     ],
 )
 def test_file_survey_name(file, file_name, expected):
@@ -75,6 +77,7 @@ def test_file_survey_name(file, file_name, expected):
         ("dd_opn2101a.zip", "OPN2101A"),
         ("dd_lms2102_a1.zip", "LMS2102_A1"),
         ("dd_lms2102_bk1.zip", "LMS2102_BK1"),
+        ("dd_lmc2102_bk1.zip", "LMC2102_BK1"),
     ],
 )
 def test_file_instrument_name(file, file_name, expected):
@@ -88,3 +91,23 @@ def test_file_from_event(dd_event):
     assert file.sizeBytes == "20"
     assert file.md5sum == "d1ad7875be9ee3c6fde3b6f9efdf3c6b67fad78ebd7f6dbc"
     assert file.relativePath == ".\\"
+
+
+@pytest.mark.parametrize(
+    "survey_name, expected",
+    [
+        ("OPN", False),
+        ("OLS", False),
+        ("LMS", True),
+        ("LMB", True),
+        ("IPS", False),
+        ("LMC", True),
+        ("LMO", True),
+        ("QWERTY", False),
+        ("LMNOP", True),
+        ("LBS", False),
+    ],
+)
+def test_is_lms(file, survey_name, expected):
+    file.name = f"dd_{survey_name}2101a.zip:my-bucket-name"
+    assert file.is_lms() is expected
