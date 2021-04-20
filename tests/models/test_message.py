@@ -86,7 +86,7 @@ def test_file_instrument_name(file, file_name, expected):
 
 
 def test_file_from_event(dd_event):
-    file = File.from_event(dd_event)
+    file = File.from_event(dd_event("OPN2102R"))
     assert file.name == "dd_OPN2102R_0103202021_16428.zip:ons-blaise-v2-nifi"
     assert file.sizeBytes == "20"
     assert file.md5sum == "d1ad7875be9ee3c6fde3b6f9efdf3c6b67fad78ebd7f6dbc"
