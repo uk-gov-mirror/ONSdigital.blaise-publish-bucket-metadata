@@ -111,3 +111,23 @@ def test_file_from_event(dd_event):
 def test_is_lms(file, survey_name, expected):
     file.name = f"dd_{survey_name}2101a.zip:my-bucket-name"
     assert file.is_lms() is expected
+
+
+@pytest.mark.parametrize(
+    "survey_name, expected",
+    [
+        ("OPN", True),
+        ("opn", True),
+        ("LMS", False),
+        ("LMB", False),
+        ("IPS", False),
+        ("LMC", False),
+        ("LMO", False),
+        ("QWERTY", False),
+        ("LMNOP", False),
+        ("OPNFOOBAR", True),
+    ],
+)
+def test_is_opn(file, survey_name, expected):
+    file.name = f"dd_{survey_name}2101a.zip:my-bucket-name"
+    assert file.is_opn() is expected

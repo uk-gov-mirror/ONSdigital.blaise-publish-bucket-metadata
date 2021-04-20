@@ -38,6 +38,9 @@ class File:
     def is_lms(self):
         return self.survey_name().startswith("LM")
 
+    def is_opn(self):
+        return self.survey_name() == "OPN"
+
     @classmethod
     def from_event(cls, event):
         return cls(

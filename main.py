@@ -36,7 +36,7 @@ def create_message(event, config):
 
     if file.type() == "mi":
         return msg.management_information(config)
-    if file.type() == "dd" and file.survey_name() == "OPN":
+    if file.type() == "dd" and file.is_opn():
         return msg.data_delivery_opn(config)
     if file.type() == "dd" and file.is_lms():
         return msg.data_delivery_lms(config)
