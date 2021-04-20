@@ -6,7 +6,7 @@ import blaise_dds
 import pytest
 from google.cloud.pubsub_v1 import PublisherClient
 
-from main import publishMsg, size_in_megabytes, update_dds
+from main import publishMsg, size_in_megabytes, update_data_delivery_service
 
 
 @mock.patch.dict(
@@ -195,7 +195,7 @@ def test_size_in_megabytes(size_in_bytes, size_in_megs):
 )
 def test_update_dds(mock_update_state, dd_event, instrument, state):
     dd_event = dd_event(instrument)
-    update_dds(dd_event, state)
+    update_data_delivery_service(dd_event, state)
     assert mock_update_state.call_count == 1
     assert mock_update_state.call_args_list[0] == mock.call(
         dd_event["name"],

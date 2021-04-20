@@ -54,7 +54,7 @@ def send_pub_sub_message(config, message):
     print("Message published")
 
 
-def update_dds(event, state, error=None):
+def update_data_delivery_service(event, state, error=None):
     try:
         dds_client = blaise_dds.Client(blaise_dds.Config.from_env())
     except Exception as err:
@@ -71,7 +71,7 @@ def publishMsg(event, _context):
     config = Config.from_env()
     config.log()
     log_event(event)
-    update_dds(event, "in_nifi_bucket")
+    update_data_delivery_service(event, "in_nifi_bucket")
 
     if config.project_id is None:
         print("project_id not set, publish failed")
@@ -82,8 +82,8 @@ def publishMsg(event, _context):
         print(f"Message {message}")
 
         send_pub_sub_message(config, message)
-        update_dds(event, "nifi_notified")
+        update_data_delivery_service(event, "nifi_notified")
 
     except Exception as error:
         print(repr(error))
-        update_dds(event, "errored", repr(error))
+        update_data_delivery_service(event, "errored", repr(error))
